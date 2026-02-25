@@ -1,0 +1,120 @@
+intake_assessment:
+  metadata:
+    sponsor_name:
+      type: text
+      label: "Name of the Executive Sponsor"
+    team_size:
+      type: number
+      label: "Size of the team to assess/upskill"
+    budget:
+      type: text
+      label: "Approved Budget Range"
+    timeline:
+      type: select
+      label: "Timeline pressure for production delivery"
+      options: [ "< 3 months", "3-6 months", "6-12 months", "12+ months" ]
+  
+  dimensions:
+    business_alignment:
+      weight: 0.20
+      questions:
+        - id: ba_1
+          text: "How aligned is executive leadership on AI-driven change?"
+          type: multiple_choice
+          options:
+            - value: 0
+              label: "Missing executive alignment"
+            - value: 1
+              label: "Executive interest without delivery ownership"
+            - value: 3
+              label: "Aligned but lacking measurable KPIs"
+            - value: 5
+              label: "Fully aligned with KPI-linked AI roadmap"
+        - id: ba_2
+          text: "Is the enterprise culture experimentation-friendly or risk-averse?"
+          type: multiple_choice
+          options:
+            - value: 0
+              label: "High cultural resistance to AI adoption"
+            - value: 2
+              label: "Risk-averse, role protection mindset"
+            - value: 4
+              label: "Experimentation-friendly with psychological safety"
+            - value: 5
+              label: "Strong learning mindset, open to continuous AI adoption"
+              
+    technical_data_maturity:
+      weight: 0.25
+      questions:
+        - id: td_1
+          text: "What is the state of your data readiness (availability, quality, governance)?"
+          type: multiple_choice
+          options:
+            - value: 0
+              label: "Weak data foundation"
+            - value: 2
+              label: "Data available but siloed, batch capability only"
+            - value: 4
+              label: "Strong quality, real-time capability"
+            - value: 5
+              label: "Optimized governance with strict regulatory handling"
+        - id: td_2
+          text: "What regulatory frameworks govern this initiative (HIPAA, GDPR, KYC, SOC 2, etc.) and what is your compliance posture?"
+          type: multiple_choice
+          options:
+            - value: 0
+              label: "High regulatory exposure, compliance blockers discovered late"
+            - value: 2
+              label: "Fragile or noncompliant architecture"
+            - value: 4
+              label: "Compliance enforced, data residency handled"
+            - value: 5
+              label: "Automated security, privacy, and compliance enforcement"
+
+    delivery_governance:
+      weight: 0.20
+      questions:
+        - id: dg_1
+          text: "What is the maturity of your release management and deployment velocity?"
+          type: multiple_choice
+          options:
+            - value: 0
+              label: "Slow deployment velocity, long cycle time to production"
+            - value: 2
+              label: "Lack of deployment readiness metrics"
+            - value: 4
+              label: "Clear initiative and governance, predictable sprints"
+            - value: 5
+              label: "Optimized release management, rollback, and audit traceability"
+
+    workforce_capability:
+      weight: 0.20
+      questions:
+        - id: wc_1
+          text: "What is the current distribution of AI/ML skills and geographical diversity?"
+          type: multiple_choice
+          options:
+            - value: 0
+              label: "Severe AI/ML skill shortages, geographic hiring constraints"
+            - value: 2
+              label: "Beginner/Intermediate seniority, mostly experimentation"
+            - value: 4
+              label: "Advanced seniority, production AI experience"
+            - value: 5
+              label: "Culturally compatible, globally operable enterprise AI capability"
+
+    economic_readiness:
+      weight: 0.15
+      questions:
+        - id: er_1
+          text: "What is the economic model driving this transformation?"
+          type: multiple_choice
+          options:
+            - value: 0
+              label: "Unclear ROI, budget tied to exploration"
+            - value: 2
+              label: "High hiring failure risk, long ramp times"
+            - value: 4
+              label: "Budget targets production, measurable execution expected"
+            - value: 5
+              label: "Clear ROI tied to delivery outcomes, cost avoidance vs traditional hiring"

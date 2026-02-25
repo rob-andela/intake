@@ -1,0 +1,28 @@
+{
+  "client_id": "cust_88291",
+  "metadata": {
+    "sponsor_name": "Elena Rostova, Chief Data Officer",
+    "team_size": 150,
+    "budget": "$1.5M - $2M",
+    "timeline": "6-12 months"
+  },
+  "responses": {
+    "ba_1": 5,
+    "ba_2": 4,
+    "td_1": 4,
+    "td_2": 5,
+    "dg_1": 4,
+    "wc_1": 4,
+    "er_1": 5
+  },
+  "calculated_scores": {
+    "business_alignment": 4.5,
+    "technical_data_maturity": 4.5,
+    "delivery_governance": 4.0,
+    "workforce_capability": 4.0,
+    "economic_readiness": 5.0,
+    "ai_readiness_index": 87.5,
+    "readiness_band": "Scalable Transformation",
+    "recommendation": "Ready for multi-cohort workforce transformation. Matches the expansion phase where learning is reused to reskill and retitle internal talent."
+  }
+}
