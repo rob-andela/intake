@@ -1,13 +1,50 @@
-# AI Workforce Transformation — Client Intake Form
+# AI Readiness Assessment
 
-Production-ready intake form and gap assessment tool for enterprise AI workforce transformation engagements. Built with Next.js 14, PostgreSQL (via Prisma), and Tailwind CSS.
+Minimalistic single-page application for evaluating enterprise AI transformation readiness. Features persona-based assessments, keyboard shortcuts, and instant results.
 
 ## Features
 
-- **7-Phase Intake Form** (Phases 0–6) covering executive context, capability assessment, cohort design, talent selection, readiness validation, deployment, and expansion
-- **Live AI Readiness Index** — real-time scoring gauge (0–100) with weighted dimensions and readiness bands
-- **Light/Dark Theme** toggle with system preference detection
-- **PostgreSQL Storage** — all submissions persisted via Prisma ORM
+- **Persona Selection** - Choose from pre-configured personas or start fresh
+- **Phase-Based Assessment** - Navigate through Business Alignment, Technical Data Maturity, and Delivery Governance dimensions
+- **Keyboard Shortcuts** - Navigate with ←→ arrows, select options with 1-9, continue with Enter
+- **Instant Persona Switching** - Dropdown to quickly switch between personas and see their results
+- **Score Card** - AI Readiness Index (0-100) with actionable recommendations
+- **Export Results** - Download assessment data as JSON
+
+## Quick Start
+
+### Local Development
+```bash
+npm install
+npm run dev
+```
+
+### Deploy to Vercel
+```bash
+vercel --prod
+```
+
+## File Structure
+
+- `app.html` - Main application (Vue.js SPA)
+- `intake.json` - Assessment schema and questions
+- `persona-*.json` - Pre-configured persona data (5 personas)
+- `api/intake.js` - Vercel serverless function for schema
+- `api/personas.js` - Vercel serverless function for persona data
+- `vercel.json` - Deployment configuration
+
+## Assessment Dimensions
+
+1. **Business Alignment** - Executive sponsorship, business case, ROI expectations
+2. **Technical Data Maturity** - Infrastructure, data quality, AI/ML capabilities  
+3. **Delivery Governance** - Change management, risk mitigation, success metrics
+
+## Scoring Bands
+
+- **0-39**: Foundational Risk - AI foundation modernization needed
+- **40-59**: Emerging - Pilot ready, small applied cohort recommended
+- **60-79**: Deployable - Production cohort deployment ready
+- **80-100**: Scalable Transformation - Multi-cohort workforce transformation ready
 - **Admin Dashboard** (`/admin`) — token-protected view of all entries with status management and admin notes
 - **PDF Export** — generate professional PDF reports for any entry via jsPDF
 - **Dual-Audience UX** — works for both client self-service and internal discovery calls

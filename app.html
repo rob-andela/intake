@@ -3,100 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workforce Transformation — Assessment Platform</title>
-    <meta name="description" content="Interactive AI readiness assessment platform with dynamic JSON schema loading and real-time scoring.">
-    
-    <!-- Favicon -->
+    <title>AI Readiness Assessment</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Vue 3 CDN -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-light: #3b82f6;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border: #e2e8f0;
-            --radius: 8px;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-muted: #64748b;
-            --border: #334155;
-        }
-
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
             line-height: 1.6;
-            transition: background-color 0.2s ease;
         }
 
-        /* Loading State */
-        .loader {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-primary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            z-index: 1000;
-        }
-
-        .spinner {
-            width: 2.5rem;
-            height: 2.5rem;
-            border: 3px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Layout */
-        .app-container {
+        .app {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
         .header {
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border);
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
             padding: 1rem 0;
             position: sticky;
             top: 0;
@@ -113,942 +46,827 @@
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            font-size: 1.25rem;
-            color: var(--text-primary);
+            color: #2563eb;
         }
 
-        .main-content {
+        .progress-info {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .persona-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .persona-dropdown {
+            min-width: 200px;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.9rem;
+            color: #0f172a;
+            cursor: pointer;
+        }
+
+        .persona-dropdown:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .keyboard-hints {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            background: rgba(15, 23, 42, 0.9);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            animation: fadeIn 0.5s ease 1s forwards;
+            max-width: 200px;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .keyboard-hint-line {
+            margin-bottom: 0.25rem;
+        }
+
+        .keyboard-hint-line:last-child {
+            margin-bottom: 0;
+        }
+
+        .main {
             flex: 1;
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
             width: 100%;
         }
 
-        /* Navigation */
-        .nav-tabs {
-            display: flex;
-            gap: 0.25rem;
-            background: var(--bg-tertiary);
-            padding: 0.25rem;
-            border-radius: var(--radius);
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid #e2e8f0;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .nav-tab {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            background: transparent;
-            border: none;
-            border-radius: calc(var(--radius) - 0.25rem);
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--text-secondary);
-            transition: all 0.2s ease;
-        }
-
-        .nav-tab.active {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            box-shadow: var(--shadow);
-        }
-
-        /* Cards */
-        .card {
-            background: var(--bg-primary);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .card-header {
+        .persona-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            background: var(--bg-secondary);
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .card-content {
-            padding: 1.5rem;
-        }
-
-        /* Forms */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
-        }
-
-        .form-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5rem 1.5rem;
-            padding-right: 2.5rem;
-        }
-
-        /* Question Styles */
-        .question {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--bg-secondary);
-            border-radius: var(--radius);
-            border-left: 4px solid var(--primary);
-        }
-
-        .question-text {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .question-options {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .option-button {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.875rem;
-            background: var(--bg-primary);
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: left;
         }
 
-        .option-button:hover {
-            border-color: var(--primary-light);
-            background: var(--bg-tertiary);
+        .persona-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.1);
         }
 
-        .option-button.selected {
-            border-color: var(--primary);
-            background: rgb(37 99 235 / 0.05);
+        .persona-card.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
         }
 
-        .option-key {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 1.75rem;
-            height: 1.75rem;
-            background: var(--bg-tertiary);
-            border-radius: 50%;
+        .persona-title {
+            font-size: 1.125rem;
             font-weight: 600;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .option-button.selected .option-key {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: var(--radius);
-            font-weight: 500;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-light);
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--text-muted);
-        }
-
-        /* Score Display */
-        .score-display {
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            border-radius: var(--radius);
-            margin-bottom: 2rem;
-        }
-
-        .score-value {
-            font-size: 3rem;
-            font-weight: 700;
+            color: #0f172a;
             margin-bottom: 0.5rem;
         }
 
-        .score-label {
-            font-size: 1.125rem;
-            opacity: 0.9;
-        }
-
-        /* Progress */
-        .progress-bar {
-            width: 100%;
-            height: 0.5rem;
-            background: var(--bg-tertiary);
-            border-radius: 0.25rem;
-            overflow: hidden;
+        .persona-description {
+            color: #64748b;
+            font-size: 0.9rem;
             margin-bottom: 1rem;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            transition: width 0.3s ease;
-        }
-
-        /* Utilities */
-        .text-center { text-align: center; }
-        .text-muted { color: var(--text-muted); }
-        .mb-4 { margin-bottom: 1rem; }
-        .mb-8 { margin-bottom: 2rem; }
-        .hidden { display: none; }
-
-        /* Typeform-style Question Interface */
-        .typeform-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem 0;
-        }
-
-        .question-progress {
-            margin-bottom: 3rem;
-        }
-
-        .progress-text {
-            text-align: center;
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .typeform-question {
-            min-height: 60vh;
+        .persona-meta {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            animation: slideIn 0.3s ease-out;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #94a3b8;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .phase-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .phase-steps {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .phase-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .phase-step.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .phase-step.completed {
+            background: #10b981;
+            color: white;
+        }
+
+        .phase-connector {
+            width: 3rem;
+            height: 2px;
+            background: #e2e8f0;
+        }
+
+        .phase-connector.completed {
+            background: #10b981;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .question-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
             margin-bottom: 1.5rem;
         }
 
         .question-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 2rem;
-            height: 2rem;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            font-weight: 600;
+            color: #2563eb;
             font-size: 0.9rem;
-        }
-
-        .question-dimension {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
 
         .question-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 2.5rem;
-            line-height: 1.2;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.4;
         }
 
-        .typeform-option {
+        .options {
             display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.25rem 1.5rem;
-            background: var(--bg-primary);
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            text-align: left;
-            margin-bottom: 1rem;
-            position: relative;
-            min-height: 4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        .typeform-option:hover {
-            border-color: var(--primary-light);
-            background: var(--bg-tertiary);
-            transform: translateX(0.25rem);
+        .option:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
         }
 
-        .typeform-option.selected {
-            border-color: var(--primary);
-            background: rgb(37 99 235 / 0.08);
-            transform: translateX(0.5rem);
+        .option.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
         }
 
-        .typeform-option.has-shortcut::before {
-            content: '';
-            position: absolute;
-            left: -0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0.25rem;
-            height: 0.25rem;
-            background: var(--primary);
-            border-radius: 50%;
-            opacity: 0.6;
-        }
-
-        .typeform-option .option-key {
-            display: inline-flex;
+        .option-value {
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 2rem;
-            height: 2rem;
-            background: var(--bg-tertiary);
-            border-radius: 0.375rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: #e2e8f0;
+            border-radius: 4px;
+            font-size: 0.8rem;
             font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+            color: #64748b;
             flex-shrink: 0;
         }
 
-        .typeform-option.selected .option-key {
-            background: var(--primary);
+        .option.selected .option-value {
+            background: #2563eb;
             color: white;
         }
 
-        .option-text {
-            flex: 1;
-            font-size: 1.125rem;
-            color: var(--text-primary);
-        }
-
-        .option-selected {
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 1.25rem;
-        }
-
-        .typeform-navigation {
+        .nav-buttons {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 3rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .score-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-display {
+            margin-bottom: 2rem;
+        }
+
+        .score-value {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #2563eb;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 1.125rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        .score-band {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-band.foundational {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .score-band.emerging {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .score-band.deployable {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .score-band.scalable {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .dimensions-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .dimension-item {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .dimension-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .dimension-score {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        /* Collapsible sections for detailed results */
+        .dimension-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .dimension-header {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .dimension-header:hover {
+            background: #f8fafc;
+        }
+
+        .dimension-header.expanded {
+            background: #eff6ff;
+            border-bottom-color: #2563eb;
+        }
+
+        .dimension-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
             gap: 1rem;
         }
 
-        .floating-score {
-            position: fixed;
-            top: 6rem;
-            right: 2rem;
-            background: var(--primary);
+        .dimension-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #0f172a;
+            text-align: left;
+            flex: 1;
+        }
+
+        .dimension-score-badge {
+            background: #2563eb;
             color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .expand-icon {
+            font-size: 1.25rem;
+            color: #64748b;
+            transition: transform 0.2s ease;
+        }
+
+        .expand-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .dimension-details {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dimension-details.expanded {
+            max-height: 1000px;
+            padding: 1rem 1.5rem 1.5rem;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 8px;
             padding: 1rem;
-            border-radius: 50%;
-            width: 4rem;
-            height: 4rem;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .question-item.answered {
+            border-left-color: #10b981;
+        }
+
+        .question-text {
+            font-size: 0.9rem;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+
+        .selected-answer {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .answer-value {
+            background: #10b981;
+            color: white;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: var(--shadow-lg);
-            z-index: 50;
-        }
-
-        .floating-score .score-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .floating-score .score-label {
-            font-size: 0.6rem;
-            opacity: 0.9;
-            line-height: 1;
-            margin-top: 0.125rem;
-        }
-
-        /* Keyboard Hints */
-        .keyboard-hints {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 0.75rem 1.5rem;
-            box-shadow: var(--shadow);
-            z-index: 50;
-        }
-
-        .hints-content {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        kbd {
-            display: inline-block;
-            padding: 0.125rem 0.375rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 0.25rem;
-            font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
             font-weight: 600;
-            color: var(--text-secondary);
         }
-        
-        /* Responsive */
+
+        .answer-text {
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
         @media (max-width: 768px) {
-            .header-content {
-                padding: 0 1rem;
-            }
-            
-            .main-content {
-                padding: 1rem;
-            }
-            
-            .nav-tabs {
-                flex-direction: column;
+            .persona-grid {
+                grid-template-columns: 1fr;
             }
 
-            .question-title {
-                font-size: 1.5rem;
+            .phase-steps {
+                gap: 0.25rem;
             }
 
-            .typeform-option {
-                padding: 1rem;
-                margin-bottom: 0.75rem;
+            .phase-connector {
+                width: 2rem;
             }
 
-            .floating-score {
-                right: 1rem;
-                top: 5rem;
-                width: 3.5rem;
-                height: 3.5rem;
+            .question-container {
+                padding: 1.5rem;
             }
 
-            .floating-score .score-value {
-                font-size: 1rem;
-            }
-
-            .keyboard-hints {
-                bottom: 1rem;
-                left: 1rem;
-                right: 1rem;
-                transform: none;
+            .score-value {
+                font-size: 3rem;
             }
         }
     </style>
 </head>
 <body>
-    <div id="app" class="app-container">
-        <!-- Loading State -->
-        <div v-if="loading" class="loader">
-            <div class="spinner"></div>
-            <p class="text-muted">Loading Assessment Platform...</p>
+    <div id="app" class="app">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">🤖 AI Readiness Assessment</div>
+                
+                <!-- Persona Selector (visible during assessment and results) -->
+                <div v-if="currentPhase !== 'personas' && personas.length > 0" class="persona-selector">
+                    <label for="persona-select" style="font-size: 0.9rem; color: #64748b;">Persona:</label>
+                    <select 
+                        id="persona-select"
+                        class="persona-dropdown"
+                        :value="selectedPersona?.client_id || 'blank'"
+                        @change="onPersonaDropdownChange"
+                    >
+                        <option value="blank">Custom Assessment</option>
+                        <option 
+                            v-for="persona in personas" 
+                            :key="persona.client_id"
+                            :value="persona.client_id"
+                        >
+                            {{ getPersonaName(persona.metadata.client_name) }}
+                        </option>
+                    </select>
+                </div>
+                
+                <!-- Progress Info -->
+                <div class="progress-info" v-if="currentPhase !== 'personas' && currentPhase !== 'results'">
+                    Phase {{ getCurrentPhaseNumber() }} of {{ totalPhases }}
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div v-if="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Loading assessment data...</p>
+            </div>
+
+            <div v-else-if="currentPhase === 'personas'" class="text-center">
+                <h1 class="mb-4">Choose a Persona to Evaluate</h1>
+                <p class="mb-8" style="color: #64748b;">Select a pre-configured persona or start with a blank assessment</p>
+                
+                <div class="persona-grid">
+                    <div 
+                        v-for="persona in personas" 
+                        :key="persona.client_id"
+                        class="persona-card"
+                        :class="{ selected: selectedPersona?.client_id === persona.client_id }"
+                        @click="selectPersona(persona)"
+                    >
+                        <div class="persona-title">{{ getPersonaName(persona.metadata.client_name) }}</div>
+                        <div class="persona-description">{{ persona.metadata.persona_description }}</div>
+                        <div class="persona-meta">
+                            <span>{{ persona.metadata.team_size }} people</span>
+                            <span>{{ persona.metadata.timeline }}</span>
+                            <span>{{ persona.metadata.budget }}</span>
+                        </div>
+                    </div>
+                    
+                    <div 
+                        class="persona-card"
+                        :class="{ selected: selectedPersona?.client_id === 'blank' }"
+                        @click="selectBlankAssessment"
+                    >
+                        <div class="persona-title">Start Fresh Assessment</div>
+                        <div class="persona-description">Begin with a blank assessment and answer questions from scratch</div>
+                        <div class="persona-meta">
+                            <span>Custom setup</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="selectedPersona" class="nav-buttons">
+                    <div></div>
+                    <button @click="startAssessment" class="btn btn-primary">
+                        Start Assessment →
+                    </button>
+                </div>
+            </div>
+
+            <div v-else-if="currentPhase !== 'results'">
+                <div class="phase-nav">
+                    <div class="phase-steps">
+                        <template v-for="(phase, index) in phases" :key="phase.key">
+                            <div 
+                                class="phase-step"
+                                :class="{
+                                    active: currentPhase === phase.key,
+                                    completed: isPhaseCompleted(phase.key)
+                                }"
+                                @click="navigateToPhase(phase.key)"
+                                :title="phase.label"
+                            >
+                                {{ index + 1 }}
+                            </div>
+                            <div 
+                                v-if="index < phases.length - 1" 
+                                class="phase-connector"
+                                :class="{ completed: isPhaseCompleted(phase.key) }"
+                            ></div>
+                        </template>
+                    </div>
+                </div>
+
+                <div v-if="currentQuestion">
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-number">
+                                Question {{ getCurrentQuestionNumber() }} of {{ getTotalQuestions() }}
+                            </div>
+                            <h2 class="question-title">{{ currentQuestion.text }}</h2>
+                        </div>
+
+                        <div class="options">
+                            <div 
+                                v-for="option in currentQuestion.options" 
+                                :key="option.value"
+                                class="option"
+                                :class="{ selected: responses[currentQuestion.id] === option.value }"
+                                @click="selectOption(currentQuestion.id, option.value)"
+                            >
+                                <div class="option-value">{{ option.value }}</div>
+                                <div class="option-text">{{ option.label }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button 
+                            @click="previousQuestion" 
+                            class="btn btn-secondary"
+                            :disabled="!canGoPrevious()"
+                        >
+                            ← Previous
+                        </button>
+                        
+                        <button 
+                            v-if="!isLastQuestion()" 
+                            @click="nextQuestion" 
+                            class="btn btn-primary"
+                            :disabled="!responses[currentQuestion.id]"
+                        >
+                            Next →
+                        </button>
+                        
+                        <button 
+                            v-else
+                            @click="showResults" 
+                            class="btn btn-primary"
+                            :disabled="!isAssessmentComplete()"
+                        >
+                            View Results
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-else-if="currentPhase === 'results'">
+                <div class="score-card">
+                    <div class="score-display">
+                        <div class="score-value">{{ finalScore }}</div>
+                        <div class="score-label">AI Readiness Index</div>
+                        <div class="score-band" :class="getScoreBandClass()">
+                            {{ getScoreBandLabel() }}
+                        </div>
+                    </div>
+
+                    <p style="color: #64748b; margin-bottom: 2rem;">
+                        {{ getScoreBandRecommendation() }}
+                    </p>
+
+                    <div class="dimensions-breakdown">
+                        <div v-for="(dimension, key) in dimensionScores" :key="key" class="dimension-section">
+                            <div 
+                                class="dimension-header"
+                                :class="{ expanded: expandedDimensions[key] }"
+                                @click="toggleDimension(key)"
+                            >
+                                <div class="dimension-info">
+                                    <div class="dimension-title">{{ formatDimensionName(key) }}</div>
+                                    <div class="dimension-score-badge">{{ dimension.toFixed(1) }}/5.0</div>
+                                </div>
+                                <div class="expand-icon" :class="{ expanded: expandedDimensions[key] }">
+                                    ▼
+                                </div>
+                            </div>
+                            <div 
+                                class="dimension-details"
+                                :class="{ expanded: expandedDimensions[key] }"
+                            >
+                                <div v-for="question in getDimensionQuestions(key)" :key="question.id" class="question-item" :class="{ answered: question.selectedAnswer }">
+                                    <div class="question-text">{{ question.text }}</div>
+                                    <div v-if="question.selectedAnswer" class="selected-answer">
+                                        <div class="answer-value">{{ question.selectedAnswer.value }}</div>
+                                        <div class="answer-text">{{ question.selectedAnswer.label }}</div>
+                                    </div>
+                                    <div v-else style="color: #999; font-style: italic;">No answer selected</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons" style="margin-top: 2rem;">
+                        <button @click="restartAssessment" class="btn btn-secondary">
+                            ← Start Over
+                        </button>
+                        <a @click="expandAllDimensions" href="javascript:void(0)" style="color: #2563eb; text-decoration: underline; cursor: pointer; font-size: 0.9rem;">{{ allDimensionsExpanded ? '📁 Collapse All Sections' : '📂 Expand All Sections' }}</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Keyboard Hints -->
+        <div v-if="currentPhase !== 'personas' && currentPhase !== 'results'" class="keyboard-hints">
+            <div class="keyboard-hint-line">← → Navigate questions</div>
+            <div class="keyboard-hint-line">1-9 Select options</div>
+            <div class="keyboard-hint-line">Enter Continue</div>
         </div>
-
-        <!-- Main Application -->
-        <template v-else>
-            <!-- Header -->
-            <header class="header">
-                <div class="header-content">
-                    <div class="logo">
-                        <span>🤖</span>
-                        AI Assessment Platform
-                    </div>
-                    <div style="display: flex; gap: 1rem; align-items: center;">
-                        <button @click="toggleTheme" class="btn btn-secondary">
-                            {{ darkMode ? '☀️' : '🌙' }}
-                        </button>
-                        <button @click="exportResults" class="btn btn-secondary" v-if="hasResults">
-                            💾 Export
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Main Content -->
-            <main class="main-content">
-                <!-- Navigation Tabs -->
-                <div class="nav-tabs">
-                    <button 
-                        class="nav-tab" 
-                        :class="{ active: currentView === 'assessment' }"
-                        @click="currentView = 'assessment'"
-                    >
-                        📋 Assessment
-                    </button>
-                    <button 
-                        class="nav-tab" 
-                        :class="{ active: currentView === 'results' }"
-                        @click="currentView = 'results'"
-                        v-if="hasResults"
-                    >
-                        📊 Results
-                    </button>
-                    <button 
-                        class="nav-tab" 
-                        :class="{ active: currentView === 'dashboard' }"
-                        @click="currentView = 'dashboard'"
-                    >
-                        📈 Dashboard
-                    </button>
-                </div>
-
-                <!-- Assessment View -->
-                <div v-if="currentView === 'assessment'">
-                    <!-- Schema Upload/Status -->
-                    <div class="card mb-8" v-if="!assessmentSchema">
-                        <div class="card-header">
-                            <h2 class="card-title">Load Assessment Schema</h2>
-                            <p class="text-muted">Load an assessment configuration from API or upload a file</p>
-                        </div>
-                        <div class="card-content">
-                            <div class="form-group">
-                                <label class="form-label">Load from API</label>
-                                <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
-                                    <button @click="loadSchemaFromAPI('intake.json')" class="btn btn-primary">
-                                        📋 Load Intake Schema
-                                    </button>
-                                    <button @click="loadSchemaFromAPI('payload.json')" class="btn btn-secondary">
-                                        📦 Load Payload Schema  
-                                    </button>
-                                    <button @click="discoverJsonFiles" class="btn btn-secondary">
-                                        🔍 Discover Files
-                                    </button>
-                                </div>
-                                <div v-if="availableFiles.length > 0" class="form-group">
-                                    <label class="form-label">Available JSON Files</label>
-                                    <select v-model="selectedFile" class="form-input form-select">
-                                        <option value="">Select a file...</option>
-                                        <option v-for="file in availableFiles" :key="file" :value="file">
-                                            {{ file }}
-                                        </option>
-                                    </select>
-                                    <button 
-                                        @click="loadSchemaFromAPI(selectedFile)" 
-                                        :disabled="!selectedFile"
-                                        class="btn btn-primary"
-                                        style="margin-top: 0.5rem;"
-                                    >
-                                        � Load Selected File
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Or Upload JSON File</label>
-                                <input 
-                                    type="file" 
-                                    accept=".json"
-                                    @change="handleSchemaUpload"
-                                    class="form-input"
-                                >
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Assessment Form -->
-                    <div v-if="assessmentSchema">
-                        <!-- Progress -->
-                        <div class="progress-bar">
-                            <div class="progress-fill" :style="{ width: progress + '%' }"></div>
-                        </div>
-                        <p class="text-center text-muted mb-8">{{ progress.toFixed(0) }}% Complete</p>
-
-                        <!-- Score Display -->
-                        <div v-if="currentScore > 0" class="score-display">
-                            <div class="score-value">{{ currentScore }}</div>
-                            <div class="score-label">AI Readiness Index</div>
-                        </div>
-
-                        <!-- Metadata Questions -->
-                        <div v-if="assessmentSchema.intake_assessment?.metadata" class="card mb-8">
-                            <div class="card-header">
-                                <h3 class="card-title">Project Information</h3>
-                            </div>
-                            <div class="card-content">
-                                <div 
-                                    v-for="(field, key) in assessmentSchema.intake_assessment.metadata" 
-                                    :key="key"
-                                    class="form-group"
-                                >
-                                    <label class="form-label">{{ field.label }}</label>
-                                    <input 
-                                        v-if="field.type === 'text' || field.type === 'number'"
-                                        :type="field.type"
-                                        v-model="responses.metadata[key]"
-                                        class="form-input"
-                                    >
-                                    <select 
-                                        v-else-if="field.type === 'select'"
-                                        v-model="responses.metadata[key]"
-                                        class="form-input form-select"
-                                    >
-                                        <option value="">Select...</option>
-                                        <option 
-                                            v-for="option in field.options" 
-                                            :key="option"
-                                            :value="option"
-                                        >
-                                            {{ option }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Typeform-style Single Question Display -->
-                        <div v-if="assessmentSchema && allQuestions.length > 0" class="typeform-container">
-                            <!-- Question Progress -->
-                            <div class="question-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" :style="{ width: progress + '%' }"></div>
-                                </div>
-                                <p class="progress-text">
-                                    {{ currentQuestionIndex + 1 }} of {{ allQuestions.length }} 
-                                    • {{ progress.toFixed(0) }}% Complete
-                                </p>
-                            </div>
-
-                            <!-- Current Question -->
-                            <div v-if="currentQuestion" class="typeform-question">
-                                <div class="question-header">
-                                    <span class="question-number">{{ currentQuestionIndex + 1 }}</span>
-                                    <span class="question-dimension">{{ currentQuestion.dimensionLabel }}</span>
-                                </div>
-                                
-                                <h2 class="question-title">{{ currentQuestion.text }}</h2>
-                                
-                                <div class="question-options">
-                                    <button
-                                        v-for="(option, idx) in currentQuestion.options"
-                                        :key="option.value"
-                                        class="typeform-option"
-                                        :class="{ 
-                                            selected: responses.answers[currentQuestion.id] === option.value,
-                                            'has-shortcut': idx < 9 
-                                        }"
-                                        @click="setAnswer(currentQuestion.id, option.value); nextQuestion()"
-                                    >
-                                        <span class="option-key">{{ idx + 1 }}</span>
-                                        <span class="option-text">{{ option.label }}</span>
-                                        <span v-if="responses.answers[currentQuestion.id] === option.value" class="option-selected">✓</span>
-                                    </button>
-                                </div>
-
-                                <!-- Navigation -->
-                                <div class="typeform-navigation">
-                                    <button 
-                                        v-if="canGoPrevious"
-                                        @click="previousQuestion" 
-                                        class="btn btn-secondary"
-                                    >
-                                        ← Previous
-                                    </button>
-                                    
-                                    <button 
-                                        v-if="canGoNext"
-                                        @click="nextQuestion" 
-                                        class="btn btn-primary"
-                                        :disabled="!responses.answers[currentQuestion.id]"
-                                    >
-                                        Next →
-                                    </button>
-                                    
-                                    <button 
-                                        v-if="!canGoNext && progress >= 100"
-                                        @click="completeAssessment" 
-                                        class="btn btn-primary"
-                                    >
-                                        ✅ Complete Assessment
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Keyboard Shortcuts Help -->
-                            <div v-if="showKeyboardHints" class="keyboard-hints">
-                                <div class="hints-content">
-                                    <p><kbd>1-9</kbd> Select option • <kbd>↑↓</kbd> Navigate • <kbd>Enter</kbd> Next • <kbd>Esc</kbd> Hide hints</p>
-                                </div>
-                            </div>
-
-                            <!-- Score Display (Floating) -->
-                            <div v-if="currentScore > 0" class="floating-score">
-                                <div class="score-value">{{ currentScore }}</div>
-                                <div class="score-label">AI Readiness</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Results View -->
-                <div v-if="currentView === 'results' && hasResults" class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Assessment Results</h2>
-                    </div>
-                    <div class="card-content">
-                        <div class="score-display">
-                            <div class="score-value">{{ finalScore }}</div>
-                            <div class="score-label">Final AI Readiness Score</div>
-                        </div>
-
-                        <h4 class="mb-4">Response Summary:</h4>
-                        <div v-if="responses.metadata" class="mb-8">
-                            <h5>Project Information</h5>
-                            <ul>
-                                <li v-for="(value, key) in responses.metadata" :key="key">
-                                    <strong>{{ key.replace('_', ' ') }}:</strong> {{ value }}
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div v-if="responses.answers">
-                            <h5>Assessment Answers</h5>
-                            <pre class="text-muted">{{ JSON.stringify(responses.answers, null, 2) }}</pre>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dashboard View -->
-                <div v-if="currentView === 'dashboard'" class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Assessment Dashboard</h2>
-                        <p class="text-muted">Platform overview and statistics</p>
-                    </div>
-                    <div class="card-content">
-                        <div class="text-center">
-                            <p class="text-muted mb-4">Dashboard features coming soon...</p>
-                            <p>Schema loaded: {{ assessmentSchema ? '✅' : '❌' }}</p>
-                            <p>Questions answered: {{ Object.keys(responses.answers).length }}</p>
-                            <p>Current score: {{ currentScore }}</p>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </template>
     </div>
 
     <script>
         const { createApp } = Vue;
-
-        // API Configuration
-        const API_BASE_URL = location.hostname === 'localhost' 
-            ? 'http://localhost:8080' 
-            : '';
+        const API_BASE_URL = '';
 
         createApp({
             data() {
                 return {
                     loading: true,
-                    currentView: 'assessment',
-                    darkMode: false, // Light mode as default
+                    currentPhase: 'personas',
                     assessmentSchema: null,
-                    responses: {
-                        metadata: {},
-                        answers: {}
-                    },
-                    finalScore: 0,
-                    availableFiles: [],
-                    selectedFile: '',
+                    personas: [],
+                    selectedPersona: null,
+                    responses: {},
                     currentQuestionIndex: 0,
                     allQuestions: [],
-                    showKeyboardHints: true
+                    phases: [],
+                    finalScore: 0,
+                    dimensionScores: {},
+                    expandedDimensions: {}
                 }
             },
             computed: {
-                hasResults() {
-                    return this.finalScore > 0;
-                },
-                progress() {
-                    if (!this.assessmentSchema?.intake_assessment?.dimensions) return 0;
-                    
-                    let totalQuestions = 0;
-                    let answeredQuestions = 0;
-
-                    Object.values(this.assessmentSchema.intake_assessment.dimensions).forEach(dim => {
-                        if (dim.questions) {
-                            totalQuestions += dim.questions.length;
-                            dim.questions.forEach(q => {
-                                if (this.responses.answers[q.id] !== undefined) {
-                                    answeredQuestions++;
-                                }
-                            });
-                        }
-                    });
-
-                    return totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
-                },
-                currentScore() {
-                    if (!this.assessmentSchema?.intake_assessment?.dimensions) return 0;
-                    
-                    let weightedScore = 0;
-                    let totalWeight = 0;
-
-                    Object.entries(this.assessmentSchema.intake_assessment.dimensions).forEach(([dimKey, dimension]) => {
-                        if (dimension.questions && dimension.weight) {
-                            let dimScore = 0;
-                            let answeredCount = 0;
-
-                            dimension.questions.forEach(question => {
-                                const answer = this.responses.answers[question.id];
-                                if (answer !== undefined) {
-                                    dimScore += answer;
-                                    answeredCount++;
-                                }
-                            });
-
-                            if (answeredCount > 0) {
-                                const avgDimScore = dimScore / answeredCount;
-                                weightedScore += avgDimScore * dimension.weight;
-                                totalWeight += dimension.weight;
-                            }
-                        }
-                    });
-
-                    return totalWeight > 0 ? Math.round((weightedScore / totalWeight) * 20) : 0;
-                },
                 currentQuestion() {
                     return this.allQuestions[this.currentQuestionIndex] || null;
                 },
-                canGoNext() {
-                    return this.currentQuestionIndex < this.allQuestions.length - 1;
+                totalPhases() {
+                    return this.phases.length;
                 },
-                canGoPrevious() {
-                    return this.currentQuestionIndex > 0;
+                allDimensionsExpanded() {
+                    const dimensionKeys = Object.keys(this.dimensionScores);
+                    return dimensionKeys.length > 0 && dimensionKeys.every(key => this.expandedDimensions[key]);
                 }
             },
             methods: {
-                async loadSchemaFromAPI(fileName = 'intake.json') {
+                async loadData() {
                     try {
-                        const url = fileName === 'intake.json' 
-                            ? `${API_BASE_URL}/api/intake`
-                            : `${API_BASE_URL}/api/payload?file=${encodeURIComponent(fileName)}`;
-                        
-                        const response = await fetch(url);
-                        if (response.ok) {
-                            const schema = await response.json();
-                            this.assessmentSchema = schema;
-                            this.buildQuestionsList();
-                            console.log('Schema loaded from API:', schema);
-                        } else {
-                            const error = await response.json();
-                            if (error.available_files) {
-                                console.log('Available JSON files:', error.available_files);
-                            }
-                            alert('Failed to load schema from API: ' + error.error);
+                        const schemaResponse = await fetch(API_BASE_URL + "/api/intake");
+                        if (schemaResponse.ok) {
+                            this.assessmentSchema = await schemaResponse.json();
+                            this.buildQuestionsAndPhases();
                         }
+
+                        const personasResponse = await fetch(API_BASE_URL + "/api/personas");
+                        if (personasResponse.ok) {
+                            const personasArray = await personasResponse.json();
+                            this.personas = personasArray;
+                        }
+
+                        this.loading = false;
                     } catch (error) {
-                        console.error('Error loading schema:', error);
-                        alert('Error loading schema from API: ' + error.message);
+                        console.error('Error loading data:', error);
+                        this.loading = false;
                     }
                 },
-                handleSchemaUpload(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            try {
-                                const schema = JSON.parse(e.target.result);
-                                this.assessmentSchema = schema;
-                                this.buildQuestionsList();
-                                console.log('Schema loaded from file:', schema);
-                            } catch (error) {
-                                alert('Invalid JSON file');
-                            }
-                        };
-                        reader.readAsText(file);
-                    }
-                },
-                buildQuestionsList() {
-                    this.allQuestions = [];
+
+                buildQuestionsAndPhases() {
                     if (!this.assessmentSchema?.intake_assessment?.dimensions) return;
-                    
+
+                    this.allQuestions = [];
+                    this.phases = [];
+
                     Object.entries(this.assessmentSchema.intake_assessment.dimensions).forEach(([dimKey, dimension]) => {
                         if (dimension.questions) {
+                            this.phases.push({
+                                key: dimKey,
+                                label: this.formatDimensionName(dimKey),
+                                questions: dimension.questions.map(q => q.id)
+                            });
+
                             dimension.questions.forEach(question => {
                                 this.allQuestions.push({
                                     ...question,
@@ -1058,128 +876,290 @@
                             });
                         }
                     });
+
+                    if (this.phases.length > 0) {
+                        this.currentPhase = this.phases[0].key;
+                    }
                 },
+
+                selectPersona(persona) {
+                    this.selectedPersona = persona;
+                },
+
+                selectBlankAssessment() {
+                    this.selectedPersona = {
+                        client_id: 'blank',
+                        metadata: {
+                            client_name: 'Custom Assessment',
+                            persona_description: 'Custom assessment'
+                        },
+                        responses: {}
+                    };
+                },
+
+                startAssessment() {
+                    if (this.selectedPersona) {
+                        this.responses = { ...this.selectedPersona.responses } || {};
+                        this.currentPhase = this.phases[0]?.key || 'assessment';
+                        this.currentQuestionIndex = 0;
+                    }
+                },
+
+                selectOption(questionId, value) {
+                    this.responses[questionId] = value;
+                },
+
                 nextQuestion() {
                     if (this.currentQuestionIndex < this.allQuestions.length - 1) {
                         this.currentQuestionIndex++;
+                        this.updateCurrentPhase();
                     }
                 },
+
                 previousQuestion() {
                     if (this.currentQuestionIndex > 0) {
                         this.currentQuestionIndex--;
+                        this.updateCurrentPhase();
                     }
                 },
-                goToQuestion(index) {
-                    if (index >= 0 && index < this.allQuestions.length) {
-                        this.currentQuestionIndex = index;
+
+                updateCurrentPhase() {
+                    const currentQuestion = this.currentQuestion;
+                    if (currentQuestion) {
+                        this.currentPhase = currentQuestion.dimension;
                     }
                 },
-                handleKeyPress(event) {
-                    if (!this.assessmentSchema || this.currentView !== 'assessment') return;
-                    
-                    const key = event.key;
-                    const currentQuestion = this.allQuestions[this.currentQuestionIndex];
-                    
-                    if (!currentQuestion) return;
-                    
-                    // Number keys for selecting options
-                    if (key >= '1' && key <= '9') {
-                        const optionIndex = parseInt(key) - 1;
-                        if (currentQuestion.options && currentQuestion.options[optionIndex]) {
-                            this.setAnswer(currentQuestion.id, currentQuestion.options[optionIndex].value);
-                            // Auto-advance to next question after selection
-                            setTimeout(() => {
-                                this.nextQuestion();
-                            }, 300);
+
+                navigateToPhase(phaseKey) {
+                    const phase = this.phases.find(p => p.key === phaseKey);
+                    if (phase) {
+                        this.currentPhase = phaseKey;
+                        const firstQuestionInPhase = this.allQuestions.findIndex(q => q.dimension === phaseKey);
+                        if (firstQuestionInPhase !== -1) {
+                            this.currentQuestionIndex = firstQuestionInPhase;
                         }
                     }
-                    
-                    // Navigation keys
-                    switch (key) {
-                        case 'Enter':
-                            this.nextQuestion();
-                            break;
-                        case 'ArrowDown':
-                            event.preventDefault();
-                            this.nextQuestion();
-                            break;
-                        case 'ArrowUp':
-                            event.preventDefault();
-                            this.previousQuestion();
-                            break;
-                        case 'Escape':
-                            this.showKeyboardHints = !this.showKeyboardHints;
-                            break;
-                    }
                 },
-                setAnswer(questionId, value) {
-                    this.responses.answers[questionId] = value;
+
+                canGoPrevious() {
+                    return this.currentQuestionIndex > 0;
                 },
-                completeAssessment() {
-                    this.finalScore = this.currentScore;
-                    this.currentView = 'results';
+
+                isLastQuestion() {
+                    return this.currentQuestionIndex >= this.allQuestions.length - 1;
                 },
-                exportResults() {
-                    const exportData = {
-                        timestamp: new Date().toISOString(),
-                        score: this.finalScore,
-                        responses: this.responses,
-                        schema_version: this.assessmentSchema?.version || 'unknown'
-                    };
-                    
-                    const blob = new Blob([JSON.stringify(exportData, null, 2)], { 
-                        type: 'application/json' 
+
+                isAssessmentComplete() {
+                    return this.allQuestions.every(q => this.responses[q.id] !== undefined);
+                },
+
+                isPhaseCompleted(phaseKey) {
+                    const phase = this.phases.find(p => p.key === phaseKey);
+                    if (!phase) return false;
+                    return phase.questions.every(qId => this.responses[qId] !== undefined);
+                },
+
+                showResults() {
+                    this.calculateScores();
+                    this.currentPhase = 'results';
+                },
+
+                calculateScores() {
+                    if (!this.assessmentSchema?.intake_assessment?.dimensions) return;
+
+                    let weightedScore = 0;
+                    let totalWeight = 0;
+                    this.dimensionScores = {};
+
+                    Object.entries(this.assessmentSchema.intake_assessment.dimensions).forEach(([dimKey, dimension]) => {
+                        if (dimension.questions && dimension.weight) {
+                            let dimScore = 0;
+                            let answeredCount = 0;
+
+                            dimension.questions.forEach(question => {
+                                const answer = this.responses[question.id];
+                                if (answer !== undefined) {
+                                    dimScore += answer;
+                                    answeredCount++;
+                                }
+                            });
+
+                            if (answeredCount > 0) {
+                                const avgDimScore = dimScore / answeredCount;
+                                this.dimensionScores[dimKey] = avgDimScore;
+                                weightedScore += avgDimScore * dimension.weight;
+                                totalWeight += dimension.weight;
+                            }
+                        }
                     });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `ai-assessment-${Date.now()}.json`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
+
+                    this.finalScore = totalWeight > 0 ? Math.round((weightedScore / totalWeight) * 20) : 0;
                 },
+
+                getCurrentPhaseNumber() {
+                    const phaseIndex = this.phases.findIndex(p => p.key === this.currentPhase);
+                    return phaseIndex !== -1 ? phaseIndex + 1 : 1;
+                },
+
+                getCurrentQuestionNumber() {
+                    return this.currentQuestionIndex + 1;
+                },
+
+                getTotalQuestions() {
+                    return this.allQuestions.length;
+                },
+
+                getPersonaName(clientName) {
+                    const match = clientName.match(/Persona: ([^(]+)/);
+                    return match ? match[1].trim() : clientName;
+                },
+
                 formatDimensionName(key) {
                     return key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                 },
-                async discoverJsonFiles() {
-                    try {
-                        const response = await fetch(`${API_BASE_URL}/api/payload?file=nonexistent.json`);
-                        if (!response.ok) {
-                            const error = await response.json();
-                            if (error.available_files) {
-                                this.availableFiles = error.available_files;
-                                console.log('Discovered JSON files:', this.availableFiles);
+
+                getScoreBandClass() {
+                    if (this.finalScore < 40) return 'foundational';
+                    if (this.finalScore < 60) return 'emerging';
+                    if (this.finalScore < 80) return 'deployable';
+                    return 'scalable';
+                },
+
+                getScoreBandLabel() {
+                    if (this.finalScore < 40) return 'Foundational Risk';
+                    if (this.finalScore < 60) return 'Emerging';
+                    if (this.finalScore < 80) return 'Deployable';
+                    return 'Scalable Transformation';
+                },
+
+                getScoreBandRecommendation() {
+                    if (this.finalScore < 40) return 'No production AI path. Recommend AI foundation modernization.';
+                    if (this.finalScore < 60) return 'Pilot ready but unstable. Recommend small applied cohort.';
+                    if (this.finalScore < 80) return 'Clear initiative and governance. Recommend production cohort deployment.';
+                    return 'Ready for multi-cohort workforce transformation.';
+                },
+
+                restartAssessment() {
+                    this.currentPhase = 'personas';
+                    this.selectedPersona = null;
+                    this.responses = {};
+                    this.currentQuestionIndex = 0;
+                    this.finalScore = 0;
+                    this.dimensionScores = {};
+                },
+
+                expandAllDimensions() {
+                    const allExpanded = this.allDimensionsExpanded;
+                    
+                    // Toggle all dimensions to the opposite state
+                    for (const key of Object.keys(this.dimensionScores)) {
+                        this.expandedDimensions[key] = !allExpanded;
+                    }
+                },
+
+                // Persona dropdown handler
+                async onPersonaDropdownChange(event) {
+                    const selectedId = event.target.value;
+                    
+                    if (selectedId === 'blank') {
+                        this.selectBlankAssessment();
+                    } else {
+                        const selectedPersona = this.personas.find(p => p.client_id === selectedId);
+                        if (selectedPersona) {
+                            this.selectedPersona = selectedPersona;
+                            // Load persona responses and jump to results
+                            this.responses = { ...selectedPersona.responses };
+                            this.calculateScores();
+                            this.currentPhase = 'results';
+                        }
+                    }
+                },
+
+                // Keyboard event handler
+                handleKeyboardEvent(event) {
+                    // Don't handle keyboard events during loading or on personas page
+                    if (this.loading || this.currentPhase === 'personas') return;
+
+                    const { key } = event;
+
+                    // Prevent default behavior for our handled keys
+                    if (['ArrowLeft', 'ArrowRight', 'Enter', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(key)) {
+                        event.preventDefault();
+                    }
+
+                    // Results page - only handle restart
+                    if (this.currentPhase === 'results') {
+                        if (key === 'Enter' || key === 'r') {
+                            this.restartAssessment();
+                        }
+                        return;
+                    }
+
+                    // Assessment navigation
+                    if (key === 'ArrowLeft') {
+                        this.previousQuestion();
+                    } else if (key === 'ArrowRight') {
+                        if (this.responses[this.currentQuestion?.id]) {
+                            if (this.isLastQuestion()) {
+                                this.showResults();
+                            } else {
+                                this.nextQuestion();
                             }
                         }
-                    } catch (error) {
-                        console.error('Error discovering files:', error);
+                    } else if (key === 'Enter') {
+                        if (this.responses[this.currentQuestion?.id]) {
+                            if (this.isLastQuestion()) {
+                                this.showResults();
+                            } else {
+                                this.nextQuestion();
+                            }
+                        }
+                    }
+                    // Option selection with number keys
+                    else if (/^[1-9]$/.test(key)) {
+                        const optionIndex = parseInt(key) - 1;
+                        const currentQuestion = this.currentQuestion;
+                        if (currentQuestion && currentQuestion.options && currentQuestion.options[optionIndex]) {
+                            this.selectOption(currentQuestion.id, currentQuestion.options[optionIndex].value);
+                        }
                     }
                 },
-                toggleTheme() {
-                    this.darkMode = !this.darkMode;
-                    document.documentElement.setAttribute('data-theme', this.darkMode ? 'dark' : 'light');
+
+                // Toggle dimension details
+                toggleDimension(dimensionId) {
+                    this.expandedDimensions[dimensionId] = !this.expandedDimensions[dimensionId];
                 },
-                async initialize() {
-                    // Try to load schema from API on startup
-                    try {
-                        await this.loadSchemaFromAPI();
-                    } catch (error) {
-                        console.log('No schema available from API, user will need to upload');
-                    }
+
+                // Get questions for a dimension with their answers
+                getDimensionQuestions(dimensionId) {
+                    if (!this.assessmentSchema || !this.assessmentSchema.intake_assessment || !this.assessmentSchema.intake_assessment.dimensions) return [];
                     
-                    this.loading = false;
+                    const dimension = this.assessmentSchema.intake_assessment.dimensions[dimensionId];
+                    if (!dimension || !dimension.questions) return [];
+                    
+                    return dimension.questions.map(question => {
+                        const response = this.responses[question.id];
+                        const selectedOption = response ? 
+                            question.options.find(opt => opt.value === response) : null;
+                        
+                        return {
+                            ...question,
+                            selectedAnswer: selectedOption
+                        };
+                    });
                 }
             },
+
             async mounted() {
-                await this.initialize();
+                await this.loadData();
                 
-                // Add keyboard event listeners for Typeform-like navigation
-                document.addEventListener('keydown', this.handleKeyPress);
+                // Add keyboard event listener
+                document.addEventListener('keydown', this.handleKeyboardEvent);
             },
+
             beforeUnmount() {
-                // Clean up event listeners
-                document.removeEventListener('keydown', this.handleKeyPress);
+                // Remove keyboard event listener
+                document.removeEventListener('keydown', this.handleKeyboardEvent);
             }
         }).mount('#app');
     </script>

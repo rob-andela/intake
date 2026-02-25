@@ -1,37 +1,19 @@
 {
   "version": 2,
-  "framework": null,
+  "buildCommand": "echo 'Static files ready'",
+  "outputDirectory": "./",
   "functions": {
     "api/intake.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "@vercel/node@3.0.0"
     },
     "api/personas.js": {
-      "runtime": "nodejs18.x"
-    },
-    "api/payload.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "@vercel/node@3.0.0"
     }
   },
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
-    },
-    {
-      "src": "/app",
-      "dest": "/app.html"
-    },
-    {
-      "src": "/intake",
-      "dest": "/intake.html"
-    },
-    {
-      "src": "/dashboard",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/landing",
-      "dest": "/landing.html"
     },
     {
       "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|json))",

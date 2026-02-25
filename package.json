@@ -4,20 +4,12 @@
   "private": true,
   "description": "Lightweight AI readiness intake form with JSON schema and persona profiles, deployable on Vercel and DDev.",
   "scripts": {
-    "dev": "npm run start:all",
-    "start": "node server.js",
-    "start:api": "node api-server.js",
-    "start:all": "concurrently \"npm run start\" \"npm run start:api\"",
-    "ddev": "npm run start:all",
-    "vercel-dev": "vercel dev"
+    "build": "echo 'Static files ready for deployment'",
+    "start": "echo 'Use vercel dev for local development'"
   },
-  "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "serve": "^14.2.1",
-    "concurrently": "^8.2.0"
+    "vercel": "latest"
   }
 }
 
