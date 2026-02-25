@@ -1,0 +1,28 @@
+{
+  "client_id": "persona_regulatory_roadblock",
+  "metadata": {
+    "client_name": "Persona: The Regulatory Roadblock (Multinational Healthcare)",
+    "sponsor_name": "Synthetic Evaluation",
+    "persona_description": "Deep pockets and high technical ambition, but entirely gridlocked by international health data regulations, privacy blockers, and a risk-averse legal team.",
+    "team_size": 800,
+    "budget": "Board-approved multi-million budget",
+    "timeline": "12+ months"
+  },
+  "responses": {
+    "Q1": 4,
+    "Q2": 3,
+    "Q3": 2,
+    "Q4": 3,
+    "Q5": 2,
+    "Q6": 1,
+    "Q7": 1,
+    "Q8": 1,
+    "Q9": 2,
+    "Q10": 1,
+    "Q11": 3,
+    "Q12": 1,
+    "Q13": 2,
+    "Q14": 1,
+    "Q15": 2
+  }
+}

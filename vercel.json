@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "framework": null,
+  "functions": {
+    "api/intake.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/personas.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/payload.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/app",
+      "dest": "/app.html"
+    },
+    {
+      "src": "/intake",
+      "dest": "/intake.html"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/landing",
+      "dest": "/landing.html"
+    },
+    {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|json))",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/app.html"
+    }
+  ]
+}

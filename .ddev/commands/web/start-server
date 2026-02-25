@@ -1,0 +1,8 @@
+#!/bin/bash
+
+## Description: Start the Node.js server for the AI Intake app
+## Usage: start-server
+## Example: "ddev start-server"
+
+cd /var/www/html
+npm run dev

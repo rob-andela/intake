@@ -1,0 +1,9 @@
+#!/bin/bash
+## Description: Start the Node.js server
+## Usage: start-node
+## Example: ddev start-node
+
+cd /var/www/html
+echo "🚀 Starting AI Intake Assessment Server..."
+npm install --quiet
+exec node server.js

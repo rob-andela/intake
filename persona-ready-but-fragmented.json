@@ -1,0 +1,28 @@
+{
+  "client_id": "persona_ready_but_fragmented",
+  "metadata": {
+    "client_name": "Persona: The Ready but Fragmented (Large Manufacturing Enterprise)",
+    "sponsor_name": "Synthetic Evaluation",
+    "persona_description": "A large traditional company with strong infrastructure but a highly siloed workforce. Leadership wants AI, but employees are hesitant and lack basic knowledge.",
+    "team_size": 1200,
+    "budget": "Pilot budget in low seven figures",
+    "timeline": "6-12 months"
+  },
+  "responses": {
+    "Q1": 4,
+    "Q2": 3,
+    "Q3": 3,
+    "Q4": 3,
+    "Q5": 2,
+    "Q6": 3,
+    "Q7": 3,
+    "Q8": 3,
+    "Q9": 3,
+    "Q10": 3,
+    "Q11": 3,
+    "Q12": 1,
+    "Q13": 3,
+    "Q14": 3,
+    "Q15": 3
+  }
+}
