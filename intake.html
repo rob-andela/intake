@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Is your org ready for AI?</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -104,11 +103,11 @@
     <div id="setup" class="container">
         <div class="setup-card">
             <h1>AI Assessment Initialization</h1>
-            <p>Please load the YAML configuration schema to begin.</p>
-            <input type="file" id="yamlLoad" style="display: none;" accept=".yml,.yaml" onchange="loadYAMLConfig(event)">
-            <button class="action-btn" onclick="document.getElementById('yamlLoad').click()">Load Schema (.yml)</button>
+            <p>The app will try to load the default JSON schema from <code>./intake.json</code>. If it is missing or invalid, please provide a schema below.</p>
+            <input type="file" id="schemaLoad" style="display: none;" accept=".json" onchange="loadSchemaJSON(event)">
+            <button class="action-btn" onclick="document.getElementById('schemaLoad').click()">Load Schema (.json)</button>
             <div style="margin-top: 1rem;">
-                <button class="action-btn secondary" onclick="downloadSampleYAML()">Download Sample Schema (.yml)</button>
+                <button class="action-btn secondary" onclick="downloadSampleSchema()">Download Sample Schema (.json)</button>
             </div>
         </div>
     </div>
@@ -117,70 +116,53 @@
         </div>
 
     <script>
-        // Data populated by YAML
+        // Data populated by schema JSON
         let questions = [];
         let weights = {};
 
-        // Embedded sample YAML, used when the user wants a starter schema
-        const SAMPLE_YAML = `
-intake_assessment:
-  metadata:
-    client_name:
-      type: text
-      label: "Client name"
-    sponsor_name:
-      type: text
-      label: "Executive sponsor name"
-  dimensions:
-    strategy:
-      weight: 0.3
-      questions:
-        - id: strat_1
-          type: multiple_choice
-          selectionType: single
-          text: "How clearly defined is your AI strategy?"
-          options:
-            - value: 1
-              label: "No defined strategy"
-            - value: 3
-              label: "Ad-hoc, team-level initiatives"
-            - value: 4
-              label: "Documented strategy with some executive support"
-            - value: 5
-              label: "Enterprise-wide AI strategy with clear roadmap"
-    data:
-      weight: 0.4
-      questions:
-        - id: data_1
-          type: multiple_choice
-          selectionType: single
-          text: "How mature is your data foundation for AI use cases?"
-          options:
-            - value: 1
-              label: "Data is siloed and hard to access"
-            - value: 3
-              label: "Some centralized data, quality is inconsistent"
-            - value: 4
-              label: "Centralized data with basic governance"
-            - value: 5
-              label: "Well-governed, high-quality data platform"
-    enablement:
-      weight: 0.3
-      questions:
-        - id: enable_1
-          type: multiple_choice
-          selectionType: single
-          text: "How prepared is your workforce to adopt AI-powered tools?"
-          options:
-            - value: 1
-              label: "Little to no awareness or training"
-            - value: 3
-              label: "Targeted training for a few teams"
-            - value: 4
-              label: "Structured enablement program across multiple functions"
-            - value: 5
-              label: "Ongoing, role-based AI enablement at scale"
-`;
+        // Embedded sample JSON schema, used when the user wants a starter schema
+        const SAMPLE_SCHEMA_JSON = {
+            "intake_assessment": {
+                "metadata": {
+                    "sponsor_name": {
+                        "type": "text",
+                        "label": "Name of the Executive Sponsor"
+                    },
+                    "team_size": {
+                        "type": "number",
+                        "label": "Size of the team to assess/upskill"
+                    },
+                    "budget": {
+                        "type": "text",
+                        "label": "Approved Budget Range"
+                    },
+                    "timeline": {
+                        "type": "select",
+                        "label": "Timeline pressure for production delivery",
+                        "options": ["< 3 months", "3-6 months", "6-12 months", "12+ months"]
+                    }
+                },
+                "dimensions": {
+                    "strategic_alignment": {
+                        "weight": 0.33,
+                        "questions": [
+                            {
+                                "id": "Q1",
+                                "type": "multiple_choice",
+                                "text": "Executive Sponsorship & Budget — To what extent is the C-suite aligned and financially committed to AI upskilling?",
+                                "options": [
+                                    { "value": 1, "label": "No executive awareness; grassroots/individual requests only." },
+                                    { "value": 2, "label": "Limited leadership interest; no dedicated budget." },
+                                    { "value": 3, "label": "Department-level sponsorship with pilot budgets approved." },
+                                    { "value": 4, "label": "VP/C-suite support with defined budget for initial rollouts." },
+                                    { "value": 5, "label": "Board-level mandate with a multi-million, enterprise-wide L&D budget." }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        };
 
         // State
         let currentIndex = 0;
@@ -194,21 +176,21 @@ intake_assessment:
         const toolbar = document.getElementById('toolbar');
         const viewResultsBtn = document.getElementById('btn-view-results');
 
-        // 1. YAML Loading & Parsing Logic
-        function loadYAMLConfig(event) {
+        // 1. Schema JSON Loading & Parsing Logic
+        function loadSchemaJSON(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const doc = jsyaml.load(e.target.result);
+                    const doc = JSON.parse(e.target.result);
                     parseConfig(doc);
                     // Hide setup, show app
                     setupDiv.style.display = 'none';
                     appDiv.style.display = 'flex';
                     progressContainer.style.display = 'block';
                     renderCurrent();
-                } catch (err) { alert("Invalid YAML schema file.\n\nError details: " + err.message); }
+                } catch (err) { alert("Invalid JSON schema file.\n\nError details: " + err.message); }
             };
             reader.readAsText(file);
         }
@@ -535,7 +517,7 @@ intake_assessment:
                     payload = JSON.parse(e.target.result);
                     // Ensure schema is loaded before rendering results
                     if(questions.length === 0) {
-                        alert("Please load the YAML Schema first before loading a profile.");
+                        alert("Please load the JSON Schema first before loading a profile.");
                         return;
                     }
                     currentIndex = questions.length;
@@ -545,43 +527,43 @@ intake_assessment:
             reader.readAsText(file);
         }
 
-        // 7. Sample YAML download helper
-        function downloadSampleYAML() {
-            const blob = new Blob([SAMPLE_YAML.trimStart()], { type: 'text/yaml;charset=utf-8;' });
+        // 7. Sample schema JSON download helper
+        function downloadSampleSchema() {
+            const blob = new Blob([JSON.stringify(SAMPLE_SCHEMA_JSON, null, 2)], { type: 'application/json;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'intake.sample.yml';
+            link.download = 'intake.sample.schema.json';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
         }
 
-        // 8. Auto-load intake.yml on page load if present
+        // 8. Auto-load intake schema from API on page load if present
         window.addEventListener('load', () => {
-            fetch('intake.yml', { cache: 'no-store' })
+            fetch('/api/intake', { cache: 'no-store' })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('intake.yml not found');
+                        throw new Error('intake schema not found');
                     }
                     return response.text();
                 })
                 .then(text => {
                     try {
-                        const doc = jsyaml.load(text);
+                        const doc = JSON.parse(text);
                         parseConfig(doc);
                         setupDiv.style.display = 'none';
                         appDiv.style.display = 'flex';
                         progressContainer.style.display = 'block';
                         renderCurrent();
                     } catch (err) {
-                        console.error('Failed to parse intake.yml:', err);
+                        console.error('Failed to parse intake schema from /api/intake:', err);
                         // Fall back to manual upload UI
                     }
                 })
                 .catch(err => {
-                    console.info('No intake.yml found on load, waiting for user to provide one.', err);
+                    console.info('No schema available from /api/intake, waiting for user to provide one.', err);
                 });
         });
     </script>
