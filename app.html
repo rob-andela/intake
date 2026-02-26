@@ -282,7 +282,7 @@
             background: #f0fdf4;
         }
 
-        .option-value {
+        .option-number {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -296,8 +296,35 @@
             flex-shrink: 0;
         }
 
-        .option.selected .option-value {
+        .option.selected .option-number {
             background: #00B87C;
+            color: white;
+        }
+
+        .option-text {
+            flex: 1;
+            margin-left: 0.75rem;
+            text-align: left;
+        }
+
+        .option-score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 1.5rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-score {
+            background: #00B87C;
+            border-color: #00B87C;
             color: white;
         }
 
@@ -726,14 +753,15 @@
 
                         <div class="options">
                             <div 
-                                v-for="option in currentQuestion.options" 
+                                v-for="(option, index) in currentQuestion.options" 
                                 :key="option.value"
                                 class="option"
                                 :class="{ selected: responses[currentQuestion.id] === option.value }"
                                 @click="selectOption(currentQuestion.id, option.value)"
                             >
-                                <div class="option-value">{{ option.value }}</div>
+                                <div class="option-number">{{ index + 1 }}</div>
                                 <div class="option-text">{{ option.label }}</div>
+                                <div class="option-score">{{ option.value }}</div>
                             </div>
                         </div>
                     </div>
@@ -751,7 +779,7 @@
                             v-if="!isLastQuestion()" 
                             @click="nextQuestion" 
                             class="btn btn-primary"
-                            :disabled="!responses[currentQuestion.id]"
+                            :disabled="responses[currentQuestion.id] === undefined"
                         >
                             Next →
                         </button>
@@ -835,7 +863,7 @@
         <!-- Keyboard Hints -->
         <div v-if="currentPhase !== 'personas' && currentPhase !== 'results'" class="keyboard-hints">
             <div class="keyboard-hint-line">← → Navigate questions</div>
-            <div class="keyboard-hint-line">1-9 Select options</div>
+            <div class="keyboard-hint-line">1-5 Select options</div>
             <div class="keyboard-hint-line">Enter Continue</div>
         </div>
     </div>
@@ -1154,7 +1182,7 @@
                     if (key === 'ArrowLeft') {
                         this.previousQuestion();
                     } else if (key === 'ArrowRight') {
-                        if (this.responses[this.currentQuestion?.id]) {
+                        if (this.responses[this.currentQuestion?.id] !== undefined) {
                             if (this.isLastQuestion()) {
                                 this.showResults();
                             } else {
@@ -1162,7 +1190,7 @@
                             }
                         }
                     } else if (key === 'Enter') {
-                        if (this.responses[this.currentQuestion?.id]) {
+                        if (this.responses[this.currentQuestion?.id] !== undefined) {
                             if (this.isLastQuestion()) {
                                 this.showResults();
                             } else {
@@ -1170,8 +1198,8 @@
                             }
                         }
                     }
-                    // Option selection with number keys
-                    else if (/^[1-9]$/.test(key)) {
+                    // Option selection with number keys (1-5)
+                    else if (/^[1-5]$/.test(key)) {
                         const optionIndex = parseInt(key) - 1;
                         const currentQuestion = this.currentQuestion;
                         if (currentQuestion && currentQuestion.options && currentQuestion.options[optionIndex]) {
