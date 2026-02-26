@@ -542,6 +542,39 @@
             font-weight: 500;
         }
 
+        .edit-question-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #64748b;
+        }
+
+        .edit-question-btn:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .edit-question-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .question-item {
+            position: relative;
+        }
+
         .text-center {
             text-align: center;
         }
@@ -769,6 +802,15 @@
                                 :class="{ expanded: expandedDimensions[key] }"
                             >
                                 <div v-for="question in getDimensionQuestions(key)" :key="question.id" class="question-item" :class="{ answered: question.selectedAnswer }">
+                                    <button 
+                                        class="edit-question-btn" 
+                                        @click="editQuestion(question.id)"
+                                        title="Edit this answer"
+                                    >
+                                        <svg viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                        </svg>
+                                    </button>
                                     <div class="question-text">{{ question.text }}</div>
                                     <div v-if="question.selectedAnswer" class="selected-answer">
                                         <div class="answer-value">{{ question.selectedAnswer.value }}</div>
@@ -1054,6 +1096,19 @@
                     // Toggle all dimensions to the opposite state
                     for (const key of Object.keys(this.dimensionScores)) {
                         this.expandedDimensions[key] = !allExpanded;
+                    }
+                },
+
+                editQuestion(questionId) {
+                    // Find the question by ID and get its index
+                    const questionIndex = this.allQuestions.findIndex(q => q.id === questionId);
+                    if (questionIndex !== -1) {
+                        // Set the current question index
+                        this.currentQuestionIndex = questionIndex;
+                        // Update the current phase to match the question's dimension
+                        this.updateCurrentPhase();
+                        // Navigate back to the assessment phase (not results)
+                        // The current phase will be set by updateCurrentPhase
                     }
                 },
 
