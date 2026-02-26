@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Workforce Transformation</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❇️</text></svg>">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     
     <style>
@@ -48,7 +48,7 @@
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #2563eb;
+            color: #00B87C;
         }
 
         .progress-info {
@@ -75,7 +75,7 @@
 
         .persona-dropdown:focus {
             outline: none;
-            border-color: #2563eb;
+            border-color: #00B87C;
         }
 
         .keyboard-hints {
@@ -123,7 +123,7 @@
             width: 3rem;
             height: 3rem;
             border: 3px solid #e2e8f0;
-            border-top-color: #2563eb;
+            border-top-color: #00B87C;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 1rem;
@@ -151,14 +151,14 @@
         }
 
         .persona-card:hover {
-            border-color: #2563eb;
+            border-color: #00B87C;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 184, 124, 0.1);
         }
 
         .persona-card.selected {
-            border-color: #2563eb;
-            background: #eff6ff;
+            border-color: #00B87C;
+            background: #f0fdf4;
         }
 
         .persona-title {
@@ -209,12 +209,12 @@
         }
 
         .phase-step.active {
-            background: #2563eb;
+            background: #00B87C;
             color: white;
         }
 
         .phase-step.completed {
-            background: #10b981;
+            background: #00B87C;
             color: white;
         }
 
@@ -225,7 +225,7 @@
         }
 
         .phase-connector.completed {
-            background: #10b981;
+            background: #00B87C;
         }
 
         .question-container {
@@ -241,7 +241,7 @@
         }
 
         .question-number {
-            color: #2563eb;
+            color: #00B87C;
             font-size: 0.9rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
@@ -273,13 +273,13 @@
         }
 
         .option:hover {
-            border-color: #2563eb;
-            background: #eff6ff;
+            border-color: #00B87C;
+            background: #f0fdf4;
         }
 
         .option.selected {
-            border-color: #2563eb;
-            background: #eff6ff;
+            border-color: #00B87C;
+            background: #f0fdf4;
         }
 
         .option-value {
@@ -297,7 +297,7 @@
         }
 
         .option.selected .option-value {
-            background: #2563eb;
+            background: #00B87C;
             color: white;
         }
 
@@ -318,7 +318,7 @@
         }
 
         .btn-primary {
-            background: #2563eb;
+            background: #00B87C;
             color: white;
         }
 
@@ -355,7 +355,7 @@
         .score-value {
             font-size: 4rem;
             font-weight: 700;
-            color: #2563eb;
+            color: #00B87C;
             line-height: 1;
         }
 
@@ -390,7 +390,7 @@
 
         .score-band.scalable {
             background: #dbeafe;
-            color: #2563eb;
+            color: #00B87C;
         }
 
         .dimensions-breakdown {
@@ -416,7 +416,7 @@
         .dimension-score {
             font-size: 1.25rem;
             font-weight: 700;
-            color: #2563eb;
+            color: #00B87C;
         }
 
         /* Collapsible sections for detailed results */
@@ -445,8 +445,8 @@
         }
 
         .dimension-header.expanded {
-            background: #eff6ff;
-            border-bottom-color: #2563eb;
+            background: #f0fdf4;
+            border-bottom-color: #00B87C;
         }
 
         .dimension-info {
@@ -466,7 +466,7 @@
         }
 
         .dimension-score-badge {
-            background: #2563eb;
+            background: #00B87C;
             color: white;
             padding: 0.25rem 0.75rem;
             border-radius: 12px;
@@ -507,7 +507,7 @@
         }
 
         .question-item.answered {
-            border-left-color: #10b981;
+            border-left-color: #00B87C;
         }
 
         .question-text {
@@ -525,7 +525,7 @@
         }
 
         .answer-value {
-            background: #10b981;
+            background: #00B87C;
             color: white;
             width: 1.5rem;
             height: 1.5rem;
@@ -538,7 +538,7 @@
         }
 
         .answer-text {
-            color: #10b981;
+            color: #00B87C;
             font-weight: 500;
         }
 
@@ -560,8 +560,8 @@
         }
 
         .edit-question-btn:hover {
-            background: #2563eb;
-            border-color: #2563eb;
+            background: #00B87C;
+            border-color: #00B87C;
             color: white;
             transform: scale(1.1);
         }
@@ -826,7 +826,7 @@
                         <button @click="restartAssessment" class="btn btn-secondary">
                             ← Start Over
                         </button>
-                        <a @click="expandAllDimensions" href="javascript:void(0)" style="color: #2563eb; text-decoration: underline; cursor: pointer; font-size: 0.9rem;">{{ allDimensionsExpanded ? '📁 Collapse All Sections' : '📂 Expand All Sections' }}</a>
+                        <a @click="expandAllDimensions" href="javascript:void(0)" style="color: #00B87C; text-decoration: underline; cursor: pointer; font-size: 0.9rem;">{{ allDimensionsExpanded ? '📁 Collapse All Sections' : '📂 Expand All Sections' }}</a>
                     </div>
                 </div>
             </div>
