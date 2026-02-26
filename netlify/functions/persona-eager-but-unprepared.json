@@ -1,0 +1,28 @@
+{
+  "client_id": "persona_eager_but_unprepared",
+  "metadata": {
+    "client_name": "Persona: The Eager but Unprepared (Mid-Sized Retail Chain)",
+    "sponsor_name": "Synthetic Evaluation",
+    "persona_description": "A highly enthusiastic culture wanting to deploy AI everywhere, but lacking the foundational data architecture and budget to actually support the tools.",
+    "team_size": 350,
+    "budget": "Constrained experimental budget",
+    "timeline": "3-6 months"
+  },
+  "responses": {
+    "Q1": 3,
+    "Q2": 3,
+    "Q3": 2,
+    "Q4": 2,
+    "Q5": 1,
+    "Q6": 2,
+    "Q7": 2,
+    "Q8": 3,
+    "Q9": 2,
+    "Q10": 2,
+    "Q11": 1,
+    "Q12": 1,
+    "Q13": 2,
+    "Q14": 2,
+    "Q15": 2
+  }
+}

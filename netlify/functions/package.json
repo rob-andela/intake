@@ -1,0 +1,17 @@
+{
+  "name": "ai-intake-readiness",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lightweight AI readiness intake form with JSON schema and persona profiles, deployable on Netlify and Vercel.",
+  "scripts": {
+    "build": "echo 'Static files ready for deployment'",
+    "start": "echo 'Use netlify dev for local development'",
+    "dev": "netlify dev"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "netlify-cli": "latest",
+    "vercel": "latest"
+  }
+}
+

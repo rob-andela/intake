@@ -28,8 +28,19 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Read the intake.json file
-    const intakeFilePath = path.join(__dirname, '../../intake.json');
+    // Read the intake.json file from the same directory
+    const intakeFilePath = path.join(__dirname, 'intake.json');
+    
+    // Check if file exists
+    if (!fs.existsSync(intakeFilePath)) {
+      console.error('intake.json not found at:', intakeFilePath);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Configuration file not found' })
+      };
+    }
+    
     const intakeData = JSON.parse(fs.readFileSync(intakeFilePath, 'utf8'));
 
     return {

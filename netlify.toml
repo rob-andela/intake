@@ -1,9 +1,11 @@
 [build]
   publish = "."
   command = "echo 'Static files ready'"
+  ignore = "false"
 
 [functions]
   directory = "netlify/functions"
+  included_files = ["*.json", "persona-*.json", "intake.json"]
 
 [[redirects]]
   from = "/api/intake"

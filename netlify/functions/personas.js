@@ -40,7 +40,14 @@ exports.handler = async (event, context) => {
 
     for (const filename of personaFiles) {
       try {
-        const filePath = path.join(__dirname, '../../', filename);
+        const filePath = path.join(__dirname, filename);
+        console.log('Looking for persona file at:', filePath);
+        
+        if (!fs.existsSync(filePath)) {
+          console.warn(`Persona file not found: ${filePath}`);
+          continue;
+        }
+        
         const personaData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
         personas.push(personaData);
       } catch (fileError) {
