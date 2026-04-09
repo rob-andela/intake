@@ -1,15 +1,8 @@
 {
   "version": 2,
+  "framework": null,
   "buildCommand": "echo 'Static files ready'",
   "outputDirectory": "./",
-  "functions": {
-    "api/intake.js": {
-      "runtime": "@vercel/node@3.0.0"
-    },
-    "api/personas.js": {
-      "runtime": "@vercel/node@3.0.0"
-    }
-  },
   "routes": [
     {
       "src": "/api/(.*)",
