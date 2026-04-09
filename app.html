@@ -639,22 +639,25 @@
 </head>
 <body>
     <div id="app" class="app">
+        <!-- Hidden file input for JSON import -->
+        <input type="file" ref="importFile" accept=".json" @change="importJSON" style="display:none">
+
         <header class="header">
             <div class="header-content">
                 <div class="logo">❇️ AI Workforce Transformation</div>
-                
+
                 <!-- Persona Selector (visible during assessment and results) -->
                 <div v-if="currentPhase !== 'personas' && personas.length > 0" class="persona-selector">
                     <label for="persona-select" style="font-size: 0.9rem; color: #64748b;">Persona:</label>
-                    <select 
+                    <select
                         id="persona-select"
                         class="persona-dropdown"
                         :value="selectedPersona?.client_id || 'blank'"
                         @change="onPersonaDropdownChange"
                     >
                         <option value="blank">Custom Assessment</option>
-                        <option 
-                            v-for="persona in personas" 
+                        <option
+                            v-for="persona in personas"
                             :key="persona.client_id"
                             :value="persona.client_id"
                         >
@@ -662,11 +665,14 @@
                         </option>
                     </select>
                 </div>
-                
+
                 <!-- Progress Info -->
                 <div class="progress-info" v-if="currentPhase !== 'personas' && currentPhase !== 'results'">
                     Phase {{ getCurrentPhaseNumber() }} of {{ totalPhases }}
                 </div>
+
+                <!-- Export button on results -->
+                <button v-if="currentPhase === 'results'" @click="exportResults" class="btn btn-secondary" style="font-size:0.85rem;">💾 Export JSON</button>
             </div>
         </header>
 
@@ -697,7 +703,7 @@
                         </div>
                     </div>
                     
-                    <div 
+                    <div
                         class="persona-card"
                         :class="{ selected: selectedPersona?.client_id === 'blank' }"
                         @click="selectBlankAssessment"
@@ -706,6 +712,14 @@
                         <div class="persona-description">Begin with a blank assessment and answer questions from scratch</div>
                         <div class="persona-meta">
                             <span>Custom setup</span>
+                        </div>
+                    </div>
+
+                    <div class="persona-card" @click="triggerImport" style="border-style: dashed; cursor: pointer;">
+                        <div class="persona-title">📂 Import JSON</div>
+                        <div class="persona-description">Load a previously exported assessment file and jump straight to results</div>
+                        <div class="persona-meta">
+                            <span>Fast path</span>
                         </div>
                     </div>
                 </div>
@@ -855,6 +869,9 @@
                             ← Start Over
                         </button>
                         <a @click="expandAllDimensions" href="javascript:void(0)" style="color: #00B87C; text-decoration: underline; cursor: pointer; font-size: 0.9rem;">{{ allDimensionsExpanded ? '📁 Collapse All Sections' : '📂 Expand All Sections' }}</a>
+                        <button @click="exportResults" class="btn btn-secondary">
+                            💾 Export JSON
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1206,6 +1223,61 @@
                             this.selectOption(currentQuestion.id, currentQuestion.options[optionIndex].value);
                         }
                     }
+                },
+
+                exportResults() {
+                    const exportData = {
+                        timestamp: new Date().toISOString(),
+                        score: this.finalScore,
+                        scoreBand: this.getScoreBandLabel(),
+                        dimensionScores: this.dimensionScores,
+                        persona: this.selectedPersona?.metadata?.client_name || 'Custom Assessment',
+                        responses: this.responses,
+                        schema_version: this.assessmentSchema?.version || 'unknown'
+                    };
+                    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `ai-assessment-${new Date().toISOString().slice(0, 10)}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                },
+
+                triggerImport() {
+                    this.$refs.importFile.click();
+                },
+
+                importJSON(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (!data.responses) {
+                                alert('Invalid file: missing "responses" key. Please upload a valid assessment export.');
+                                return;
+                            }
+                            this.responses = { ...data.responses };
+                            this.selectedPersona = {
+                                client_id: 'imported',
+                                metadata: {
+                                    client_name: data.persona || 'Imported Assessment',
+                                    persona_description: `Imported from ${file.name}`
+                                },
+                                responses: data.responses
+                            };
+                            this.calculateScores();
+                            this.currentPhase = 'results';
+                        } catch (err) {
+                            alert('Could not parse JSON file. Please upload a valid assessment export.');
+                        }
+                        event.target.value = '';
+                    };
+                    reader.readAsText(file);
                 },
 
                 // Toggle dimension details
