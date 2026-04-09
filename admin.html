@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — AI Readiness Evaluation | Andela</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    /* ── Header ────────────────────────────────────────────────────── */
+    .header {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      height: 32px;
+      width: auto;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .header-links a {
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .header-links a:hover { color: #00B87C; }
+
+    /* ── Layout ────────────────────────────────────────────────────── */
+    .main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── Cards ─────────────────────────────────────────────────────── */
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Password Gate ─────────────────────────────────────────────── */
+    .gate-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 72px);
+    }
+
+    .gate-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .gate-card h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+
+    .gate-card p {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: #0f172a;
+      background: white;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #00B87C;
+      box-shadow: 0 0 0 3px rgba(0, 184, 124, 0.12);
+    }
+
+    /* ── Buttons ───────────────────────────────────────────────────── */
+    .btn {
+      padding: 0.65rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #00B87C;
+      color: white;
+      width: 100%;
+    }
+
+    .btn-primary:hover { background: #009e6a; }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .btn-danger:hover { background: #fee2e2; }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    /* ── Alert / Error ─────────────────────────────────────────────── */
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 0.75rem;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .alert-success {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    /* ── Stats Row ─────────────────────────────────────────────────── */
+    .stats-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      padding: 1.25rem 1.5rem;
+      flex: 1;
+      min-width: 130px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #00B87C;
+    }
+
+    /* ── Table ─────────────────────────────────────────────────────── */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: #f8fafc;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover { background: #f8fafc; }
+
+    tbody td {
+      padding: 0.85rem 1rem;
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+
+    /* ── Score Badge ───────────────────────────────────────────────── */
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 0.85rem;
+      background: #00B87C;
+      color: white;
+    }
+
+    .score-badge.low    { background: #dc2626; }
+    .score-badge.medium { background: #d97706; }
+    .score-badge.good   { background: #16a34a; }
+    .score-badge.high   { background: #00B87C; }
+
+    /* ── Band Pills ────────────────────────────────────────────────── */
+    .band-pill {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .band-pill.foundational { background: #fef2f2; color: #dc2626; }
+    .band-pill.emerging     { background: #fef3c7; color: #d97706; }
+    .band-pill.deployable   { background: #dcfce7; color: #16a34a; }
+    .band-pill.scalable     { background: #dbeafe; color: #1d4ed8; }
+
+    /* ── Status Select ─────────────────────────────────────────────── */
+    .status-select {
+      padding: 0.35rem 0.6rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: #374151;
+      background: white;
+      cursor: pointer;
+    }
+
+    .status-select:focus {
+      outline: none;
+      border-color: #00B87C;
+    }
+
+    /* ── Detail Panel ──────────────────────────────────────────────── */
+    .detail-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+
+    .detail-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+    }
+
+    .detail-drawer {
+      position: relative;
+      background: white;
+      width: 100%;
+      max-width: 560px;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .detail-close {
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-close:hover { background: #e2e8f0; }
+
+    .detail-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-section-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 0.75rem;
+    }
+
+    .detail-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .detail-meta-item {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+    }
+
+    .detail-meta-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-bottom: 0.2rem;
+    }
+
+    .detail-meta-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .response-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .response-item {
+      background: #f8fafc;
+      border-left: 3px solid #00B87C;
+      border-radius: 0 6px 6px 0;
+      padding: 0.5rem 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .response-key { color: #64748b; font-weight: 500; }
+    .response-val { color: #0f172a; font-weight: 700; }
+
+    .dim-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .dim-item {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .dim-name { color: #374151; }
+    .dim-score { font-weight: 700; color: #00B87C; }
+
+    .notes-textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 0.65rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: vertical;
+      color: #0f172a;
+    }
+
+    .notes-textarea:focus {
+      outline: none;
+      border-color: #00B87C;
+    }
+
+    /* ── Empty / Loading States ────────────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #94a3b8;
+    }
+
+    .spinner {
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 3px solid #e2e8f0;
+      border-top-color: #00B87C;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Responsive ────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .stats-row { flex-direction: column; }
+      .detail-drawer { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div id="admin-app">
+
+  <!-- ── Header ─────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-content">
+      <a href="/" class="logo-link">
+        <img src="/andela_logo.svg" alt="Andela AI Readiness Evaluation" class="logo-img">
+      </a>
+      <nav class="header-links">
+        <a href="/">Assessment</a>
+        <a href="/admin">Admin</a>
+        <a href="/docs">API Docs</a>
+        <span v-if="authenticated" style="color:#94a3b8;font-size:0.85rem;">Admin Dashboard</span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Password Gate ───────────────────────────────────────────────── -->
+  <div v-if="!authenticated" class="gate-wrapper">
+    <div class="gate-card">
+      <h1>Admin Access</h1>
+      <p>Enter your admin password to access the submissions dashboard.</p>
+
+      <form @submit.prevent="attemptLogin">
+        <div class="form-group">
+          <label for="admin-password">Password</label>
+          <input
+            id="admin-password"
+            v-model="passwordInput"
+            type="password"
+            class="form-control"
+            placeholder="Enter admin password"
+            autocomplete="current-password"
+            :disabled="gateLoading"
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary" :disabled="gateLoading || !passwordInput">
+          {{ gateLoading ? 'Verifying…' : 'Access Admin' }}
+        </button>
+
+        <div v-if="gateError" class="alert alert-error">{{ gateError }}</div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Dashboard ──────────────────────────────────────────────────── -->
+  <main v-else class="main">
+
+    <!-- Stats row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Submissions</div>
+        <div class="stat-value">{{ submissions.length }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">New</div>
+        <div class="stat-value">{{ countByStatus('new') }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Reviewed</div>
+        <div class="stat-value">{{ countByStatus('reviewed') }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Actioned</div>
+        <div class="stat-value">{{ countByStatus('actioned') }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg Score</div>
+        <div class="stat-value">{{ avgScore }}</div>
+      </div>
+    </div>
+
+    <!-- Submissions table -->
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="padding:1.25rem 1.5rem; border-bottom:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+        <span class="card-title" style="margin:0;">Submissions</span>
+        <button class="btn btn-secondary btn-sm" @click="loadSubmissions">Refresh</button>
+      </div>
+
+      <div v-if="loading" class="empty-state">
+        <div class="spinner"></div>
+        <p>Loading submissions…</p>
+      </div>
+
+      <div v-else-if="submissions.length === 0" class="empty-state">
+        <p>No submissions yet.</p>
+      </div>
+
+      <div v-else class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Persona</th>
+              <th>Score</th>
+              <th>Band</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="sub in submissions" :key="sub.id">
+              <td style="white-space:nowrap; color:#64748b; font-size:0.8rem;">{{ formatDate(sub.createdAt) }}</td>
+              <td style="max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" :title="sub.persona">{{ sub.persona }}</td>
+              <td>
+                <span class="score-badge" :class="scoreBadgeClass(sub.score)">{{ sub.score }}</span>
+              </td>
+              <td>
+                <span class="band-pill" :class="bandPillClass(sub.scoreBand)">{{ sub.scoreBand }}</span>
+              </td>
+              <td>
+                <select
+                  class="status-select"
+                  :value="sub.status"
+                  @change="updateStatus(sub, $event.target.value)"
+                >
+                  <option value="new">New</option>
+                  <option value="reviewed">Reviewed</option>
+                  <option value="actioned">Actioned</option>
+                </select>
+              </td>
+              <td>
+                <div style="display:flex; gap:0.4rem;">
+                  <button class="btn btn-secondary btn-sm" @click="openDetail(sub)">View</button>
+                  <button class="btn btn-danger btn-sm" @click="confirmDelete(sub)">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Load error -->
+    <div v-if="loadError" class="alert alert-error">{{ loadError }}</div>
+
+  </main>
+
+  <!-- ── Detail Drawer ────────────────────────────────────────────────── -->
+  <div v-if="detailSubmission" class="detail-panel" @click.self="closeDetail">
+    <div class="detail-overlay" @click="closeDetail"></div>
+    <div class="detail-drawer">
+
+      <div class="detail-header">
+        <div class="detail-title">Submission Detail</div>
+        <button class="detail-close" @click="closeDetail">✕</button>
+      </div>
+
+      <!-- Meta grid -->
+      <div class="detail-section">
+        <div class="detail-section-title">Summary</div>
+        <div class="detail-meta-grid">
+          <div class="detail-meta-item">
+            <div class="detail-meta-label">Persona</div>
+            <div class="detail-meta-value" style="font-size:0.85rem; word-break:break-word;">{{ detailSubmission.persona }}</div>
+          </div>
+          <div class="detail-meta-item">
+            <div class="detail-meta-label">Date</div>
+            <div class="detail-meta-value" style="font-size:0.85rem;">{{ formatDate(detailSubmission.createdAt) }}</div>
+          </div>
+          <div class="detail-meta-item">
+            <div class="detail-meta-label">Score</div>
+            <div class="detail-meta-value">{{ detailSubmission.score }}</div>
+          </div>
+          <div class="detail-meta-item">
+            <div class="detail-meta-label">Band</div>
+            <div class="detail-meta-value">{{ detailSubmission.scoreBand }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dimension scores -->
+      <div class="detail-section">
+        <div class="detail-section-title">Dimension Scores</div>
+        <div class="dim-list">
+          <div class="dim-item" v-for="(score, dim) in detailSubmission.dimensions" :key="dim">
+            <span class="dim-name">{{ formatDimName(dim) }}</span>
+            <span class="dim-score">{{ typeof score === 'number' ? score.toFixed(2) : score }} / 5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Responses -->
+      <div class="detail-section">
+        <div class="detail-section-title">Responses (Q → Value)</div>
+        <div class="response-list">
+          <div class="response-item" v-for="(val, qid) in detailSubmission.responses" :key="qid">
+            <span class="response-key">{{ qid }}</span>
+            <span class="response-val">{{ val }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="detail-section">
+        <div class="detail-section-title">Notes</div>
+        <textarea
+          class="notes-textarea"
+          v-model="detailNotes"
+          placeholder="Add internal notes…"
+        ></textarea>
+        <button
+          class="btn btn-primary btn-sm"
+          style="margin-top:0.5rem; width:auto;"
+          @click="saveNotes"
+          :disabled="notesLoading"
+        >{{ notesLoading ? 'Saving…' : 'Save Notes' }}</button>
+        <div v-if="notesSaved" class="alert alert-success" style="margin-top:0.5rem;">Notes saved.</div>
+      </div>
+
+      <!-- Status from drawer -->
+      <div class="detail-section">
+        <div class="detail-section-title">Status</div>
+        <select
+          class="status-select"
+          :value="detailSubmission.status"
+          @change="updateStatus(detailSubmission, $event.target.value)"
+        >
+          <option value="new">New</option>
+          <option value="reviewed">Reviewed</option>
+          <option value="actioned">Actioned</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+const { createApp, ref, computed } = Vue;
+
+createApp({
+  setup() {
+    // ── Auth state ───────────────────────────────────────────
+    const authenticated = ref(false);
+    const passwordInput = ref('');
+    const authToken = ref('');
+    const gateError = ref('');
+    const gateLoading = ref(false);
+
+    // ── Dashboard state ──────────────────────────────────────
+    const submissions = ref([]);
+    const loading = ref(false);
+    const loadError = ref('');
+
+    // ── Detail drawer state ──────────────────────────────────
+    const detailSubmission = ref(null);
+    const detailNotes = ref('');
+    const notesLoading = ref(false);
+    const notesSaved = ref(false);
+
+    // ── Computed ─────────────────────────────────────────────
+    const avgScore = computed(() => {
+      if (!submissions.value.length) return '—';
+      const sum = submissions.value.reduce((acc, s) => acc + s.score, 0);
+      return Math.round(sum / submissions.value.length);
+    });
+
+    // ── Auth ─────────────────────────────────────────────────
+    async function attemptLogin() {
+      if (!passwordInput.value) return;
+      gateLoading.value = true;
+      gateError.value = '';
+
+      try {
+        const res = await fetch('/api/admin/submissions', {
+          headers: { Authorization: 'Bearer ' + passwordInput.value }
+        });
+
+        if (res.status === 401) {
+          gateError.value = 'Incorrect password. Please try again.';
+          gateLoading.value = false;
+          return;
+        }
+
+        if (!res.ok) {
+          gateError.value = 'Server error. Please try again later.';
+          gateLoading.value = false;
+          return;
+        }
+
+        authToken.value = passwordInput.value;
+        authenticated.value = true;
+        submissions.value = await res.json();
+      } catch {
+        gateError.value = 'Network error. Please check your connection.';
+      } finally {
+        gateLoading.value = false;
+      }
+    }
+
+    // ── Data loading ─────────────────────────────────────────
+    async function loadSubmissions() {
+      loading.value = true;
+      loadError.value = '';
+      try {
+        const res = await fetch('/api/admin/submissions', {
+          headers: { Authorization: 'Bearer ' + authToken.value }
+        });
+        if (!res.ok) {
+          loadError.value = 'Failed to load submissions.';
+          return;
+        }
+        submissions.value = await res.json();
+      } catch {
+        loadError.value = 'Network error while loading submissions.';
+      } finally {
+        loading.value = false;
+      }
+    }
+
+    // ── Status update ─────────────────────────────────────────
+    async function updateStatus(sub, newStatus) {
+      try {
+        const res = await fetch('/api/admin/submission?id=' + sub.id, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + authToken.value
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (res.ok) {
+          const updated = await res.json();
+          // Update in local list
+          const idx = submissions.value.findIndex(s => s.id === sub.id);
+          if (idx !== -1) submissions.value[idx] = updated;
+          // Also update detail panel if open
+          if (detailSubmission.value?.id === sub.id) detailSubmission.value = updated;
+        }
+      } catch {
+        // Silent fail — user can retry via refresh
+      }
+    }
+
+    // ── Delete ────────────────────────────────────────────────
+    async function confirmDelete(sub) {
+      if (!confirm('Delete this submission? This cannot be undone.')) return;
+      try {
+        const res = await fetch('/api/admin/submission?id=' + sub.id, {
+          method: 'DELETE',
+          headers: { Authorization: 'Bearer ' + authToken.value }
+        });
+        if (res.ok) {
+          submissions.value = submissions.value.filter(s => s.id !== sub.id);
+          if (detailSubmission.value?.id === sub.id) closeDetail();
+        }
+      } catch {
+        alert('Failed to delete submission. Please try again.');
+      }
+    }
+
+    // ── Detail drawer ─────────────────────────────────────────
+    function openDetail(sub) {
+      detailSubmission.value = sub;
+      detailNotes.value = sub.notes || '';
+      notesSaved.value = false;
+    }
+
+    function closeDetail() {
+      detailSubmission.value = null;
+      notesSaved.value = false;
+    }
+
+    async function saveNotes() {
+      if (!detailSubmission.value) return;
+      notesLoading.value = true;
+      notesSaved.value = false;
+      try {
+        const res = await fetch('/api/admin/submission?id=' + detailSubmission.value.id, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + authToken.value
+          },
+          body: JSON.stringify({ notes: detailNotes.value })
+        });
+        if (res.ok) {
+          const updated = await res.json();
+          const idx = submissions.value.findIndex(s => s.id === detailSubmission.value.id);
+          if (idx !== -1) submissions.value[idx] = updated;
+          detailSubmission.value = updated;
+          notesSaved.value = true;
+          setTimeout(() => { notesSaved.value = false; }, 2500);
+        }
+      } catch {
+        // silent
+      } finally {
+        notesLoading.value = false;
+      }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────
+    function countByStatus(status) {
+      return submissions.value.filter(s => s.status === status).length;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    function scoreBadgeClass(score) {
+      if (score < 40) return 'low';
+      if (score < 60) return 'medium';
+      if (score < 80) return 'good';
+      return 'high';
+    }
+
+    function bandPillClass(band) {
+      if (!band) return '';
+      const lower = band.toLowerCase();
+      if (lower.includes('foundational')) return 'foundational';
+      if (lower.includes('emerging'))     return 'emerging';
+      if (lower.includes('deployable'))   return 'deployable';
+      if (lower.includes('scalable'))     return 'scalable';
+      return '';
+    }
+
+    function formatDimName(key) {
+      return key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    return {
+      // auth
+      authenticated, passwordInput, gateError, gateLoading, attemptLogin,
+      // data
+      submissions, loading, loadError, loadSubmissions,
+      // table actions
+      updateStatus, confirmDelete,
+      // detail
+      detailSubmission, detailNotes, notesLoading, notesSaved,
+      openDetail, closeDetail, saveNotes,
+      // computed
+      avgScore,
+      // helpers
+      countByStatus, formatDate, scoreBadgeClass, bandPillClass, formatDimName
+    };
+  }
+}).mount('#admin-app');
+</script>
+</body>
+</html>

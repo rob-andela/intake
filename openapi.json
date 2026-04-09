@@ -1,0 +1,212 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AI Readiness Evaluation API",
+    "version": "1.0.0",
+    "description": "API for the Andela AI Readiness Evaluation intake form. Provides assessment schema, persona profiles, submission persistence, and admin management endpoints."
+  },
+  "servers": [
+    { "url": "/", "description": "Current origin" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Admin endpoints require Authorization: Bearer <ADMIN_SECRET>"
+      }
+    },
+    "schemas": {
+      "Submission": {
+        "type": "object",
+        "properties": {
+          "id":         { "type": "string", "example": "clxyz123abc" },
+          "createdAt":  { "type": "string", "format": "date-time" },
+          "updatedAt":  { "type": "string", "format": "date-time" },
+          "persona":    { "type": "string", "example": "Persona: CEO/Executive Champion" },
+          "score":      { "type": "integer", "minimum": 0, "maximum": 100 },
+          "scoreBand":  { "type": "string", "example": "Deployable" },
+          "responses":  { "type": "object", "description": "Map of question ID to selected option value", "example": { "Q1": 5, "Q2": 3 } },
+          "dimensions": { "type": "object", "description": "Map of dimension key to average score", "example": { "business_alignment": 4.25 } },
+          "notes":      { "type": "string", "nullable": true },
+          "status":     { "type": "string", "enum": ["new", "reviewed", "actioned"], "default": "new" }
+        },
+        "required": ["id", "createdAt", "updatedAt", "persona", "score", "scoreBand", "responses", "dimensions", "status"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" }
+        },
+        "required": ["error"]
+      }
+    }
+  },
+  "paths": {
+    "/api/intake": {
+      "get": {
+        "summary": "Get assessment schema",
+        "description": "Returns the full intake.json schema including all dimensions, questions, and option definitions.",
+        "operationId": "getIntake",
+        "responses": {
+          "200": {
+            "description": "The assessment schema",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to load schema",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/personas": {
+      "get": {
+        "summary": "List personas (or fetch a single one)",
+        "description": "Returns all persona JSON files found in the project root. Optionally filter by client_id or client_name using the `id` query parameter.",
+        "operationId": "getPersonas",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "client_id or client_name to filter to a single persona"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persona list or single persona object",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          },
+          "500": {
+            "description": "Failed to load personas",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/submit": {
+      "post": {
+        "summary": "Submit a completed assessment",
+        "description": "Persists a completed assessment as a Submission record in Neon Postgres. Called automatically by the SPA when the user views results.",
+        "operationId": "submitAssessment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["persona", "score", "scoreBand", "responses", "dimensions"],
+                "properties": {
+                  "persona":    { "type": "string" },
+                  "score":      { "type": "integer" },
+                  "scoreBand":  { "type": "string" },
+                  "responses":  { "type": "object" },
+                  "dimensions": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Submission created",
+            "content": { "application/json": { "schema": { "type": "object", "properties": { "id": { "type": "string" } } } } }
+          },
+          "400": {
+            "description": "Invalid or missing fields",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "500": {
+            "description": "Database error",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
+        }
+      }
+    },
+    "/api/admin/submissions": {
+      "get": {
+        "summary": "List all submissions",
+        "description": "Returns all submissions ordered by createdAt descending. Requires admin Bearer token.",
+        "operationId": "listSubmissions",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Array of submissions",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Submission" } }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "500": { "description": "Database error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/admin/submission": {
+      "get": {
+        "summary": "Fetch a single submission",
+        "operationId": "getSubmission",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Submission", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Submission" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "500": { "description": "Database error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      },
+      "patch": {
+        "summary": "Update status or notes on a submission",
+        "operationId": "updateSubmission",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": { "type": "string", "enum": ["new", "reviewed", "actioned"] },
+                  "notes":  { "type": "string", "nullable": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Updated submission", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Submission" } } } },
+          "400": { "description": "Bad request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "500": { "description": "Database error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      },
+      "delete": {
+        "summary": "Delete a submission",
+        "operationId": "deleteSubmission",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Deleted", "content": { "application/json": { "schema": { "type": "object", "properties": { "deleted": { "type": "boolean" } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "500": { "description": "Database error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    }
+  }
+}

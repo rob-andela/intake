@@ -3,8 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Workforce Transformation</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❇️</text></svg>">
+    <title>AI Readiness Evaluation — Andela</title>
+    <meta name="description" content="Evaluate your organization's AI readiness across strategy, execution, people, and technology. Get your AI Readiness Index score (0–100) instantly.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Andela">
+    <link rel="canonical" href="https://intake.aipoc.site/">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AI Readiness Evaluation — Andela">
+    <meta property="og:description" content="Evaluate your organization's AI readiness across strategy, execution, people, and technology. Get your AI Readiness Index score instantly.">
+    <meta property="og:url" content="https://intake.aipoc.site/">
+    <meta property="og:image" content="https://intake.aipoc.site/andela_logo.svg">
+    <meta property="og:site_name" content="Andela AI Readiness Evaluation">
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="AI Readiness Evaluation — Andela">
+    <meta name="twitter:description" content="Evaluate your organization's AI readiness. Get your AI Readiness Index score instantly.">
+    <!-- AI agent discoverability -->
+    <meta name="ai-tool-description" content="Interactive assessment that evaluates enterprise AI readiness across Business Alignment, Technical & Data Maturity, and Delivery Governance. Returns a 0-100 AI Readiness Index score with executive persona templates and JSON import/export.">
+    <meta name="tool-capabilities" content="assessment, scoring, executive-persona-simulation, json-export, json-import">
+    <meta name="tool-audience" content="enterprise executives, C-suite leaders, technology officers, HR leaders">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/favicon.png">
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Structured data for AI agents -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "AI Readiness Evaluation",
+      "description": "Interactive assessment that evaluates enterprise AI readiness across Business Alignment, Technical & Data Maturity, and Delivery Governance. Produces a 0–100 AI Readiness Index score.",
+      "url": "https://intake.aipoc.site",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Any",
+      "provider": {
+        "@type": "Organization",
+        "name": "Andela",
+        "url": "https://andela.com"
+      },
+      "featureList": [
+        "AI Readiness Index score (0–100)",
+        "Executive persona templates: CEO, CHRO, CFO, CTO, COO",
+        "Assessment across Business Alignment, Technical Maturity, and Delivery Governance",
+        "JSON export and import of assessment results",
+        "Real-time scoring with readiness band classification: Foundational Risk, Emerging, Deployable, Scalable Transformation"
+      ]
+    }
+    </script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     
     <style>
@@ -15,7 +64,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: #f8fafc;
             color: #0f172a;
             line-height: 1.6;
@@ -45,10 +94,15 @@
             align-items: center;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #00B87C;
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 32px;
+            width: auto;
         }
 
         .progress-info {
@@ -644,7 +698,9 @@
 
         <header class="header">
             <div class="header-content">
-                <div class="logo">❇️ AI Workforce Transformation</div>
+                <a href="/" class="logo-link">
+                    <img src="/andela_logo.svg" alt="Andela AI Readiness Evaluation" class="logo-img">
+                </a>
 
                 <!-- Persona Selector (visible during assessment and results) -->
                 <div v-if="currentPhase !== 'personas' && personas.length > 0" class="persona-selector">
@@ -1048,6 +1104,20 @@
 
                 showResults() {
                     this.calculateScores();
+
+                    // Fire-and-forget submission to backend (non-blocking)
+                    fetch('/api/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            persona: this.selectedPersona?.metadata?.client_name || 'Custom Assessment',
+                            score: this.finalScore,
+                            scoreBand: this.getScoreBandLabel(),
+                            responses: this.responses,
+                            dimensions: this.dimensionScores
+                        })
+                    }).catch(() => {}); // fire and forget
+
                     this.currentPhase = 'results';
                 },
 

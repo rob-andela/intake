@@ -1,0 +1,28 @@
+{
+  "client_id": "persona_coo_operator",
+  "metadata": {
+    "client_name": "Persona: COO Operator (Operational Efficiency, Moderate Governance Readiness)",
+    "sponsor_name": "Synthetic Evaluation",
+    "persona_description": "A COO focused on deploying AI to drive operational efficiency and process automation. Moderate deployment velocity, mixed vendor landscape, and emerging governance structures. Workforce is open to change but upskilling is still informal.",
+    "team_size": 600,
+    "budget": "Operations transformation budget (mid seven figures)",
+    "timeline": "3-6 months"
+  },
+  "responses": {
+    "Q1": 2,
+    "Q2": 3,
+    "Q3": 5,
+    "Q4": 3,
+    "Q5": 4,
+    "Q6": 3,
+    "Q7": 3,
+    "Q8": 3,
+    "Q9": 4,
+    "Q10": 3,
+    "Q11": 3,
+    "Q12": 5,
+    "Q13": 3,
+    "Q14": 3,
+    "Q15": 3
+  }
+}

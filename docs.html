@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Docs — AI Readiness Evaluation | Andela</title>
+  <meta name="description" content="OpenAPI documentation for the Andela AI Readiness Evaluation API.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Swagger UI CSS from CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8fafc;
+    }
+
+    /* Top nav bar matching app.html style */
+    .site-header {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      height: 32px;
+      width: auto;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .header-links a {
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .header-links a:hover {
+      color: #00B87C;
+    }
+
+    /* Override Swagger UI top bar since we have our own */
+    .swagger-ui .topbar { display: none !important; }
+
+    /* Make the Swagger UI background consistent */
+    #swagger-ui { background: #f8fafc; }
+
+    .swagger-ui .info {
+      margin: 2rem 0 1rem;
+    }
+
+    .swagger-ui .info .title {
+      color: #0f172a;
+    }
+
+    /* Brand the operation colours to match #00B87C where possible */
+    .swagger-ui .opblock.opblock-post .opblock-summary-method {
+      background: #00B87C;
+    }
+
+    .swagger-ui .btn.execute {
+      background-color: #00B87C;
+      border-color: #00B87C;
+    }
+
+    .swagger-ui .btn.execute:hover {
+      background-color: #009e6a;
+    }
+
+    .swagger-ui .opblock-summary-method {
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="logo-link">
+      <img src="/andela_logo.svg" alt="Andela AI Readiness Evaluation" class="logo-img">
+    </a>
+    <nav class="header-links">
+      <a href="/">Assessment</a>
+      <a href="/admin">Admin</a>
+      <a href="/docs">API Docs</a>
+    </nav>
+  </header>
+
+  <div id="swagger-ui"></div>
+
+  <!-- Swagger UI JS from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function () {
+      SwaggerUIBundle({
+        url: '/openapi.json',
+        dom_id: '#swagger-ui',
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        layout: 'StandaloneLayout',
+        deepLinking: true,
+        defaultModelsExpandDepth: 1,
+        defaultModelExpandDepth: 1,
+        displayRequestDuration: true
+      });
+    };
+  </script>
+</body>
+</html>

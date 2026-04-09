@@ -1,22 +1,19 @@
 {
   "version": 2,
   "framework": null,
-  "buildCommand": "echo 'Static files ready'",
+  "buildCommand": "prisma generate && echo 'Static files ready'",
   "outputDirectory": "./",
-  "routes": [
+  "headers": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|json))",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      }
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/app.html"
+      "source": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg))",
+      "headers": [
+        { "key": "cache-control", "value": "public, max-age=31536000, immutable" }
+      ]
     }
+  ],
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/docs",  "destination": "/docs.html"  },
+    { "source": "/((?!api/).*)", "destination": "/app.html" }
   ]
 }

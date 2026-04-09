@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("INTAKE_PRISMA_DATABASE_URL")
+}
+
+model Submission {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  persona     String
+  score       Int
+  scoreBand   String
+  responses   Json
+  dimensions  Json
+  notes       String?
+  status      String   @default("new")
+}

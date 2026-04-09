@@ -4,16 +4,18 @@
   "private": true,
   "description": "Lightweight AI readiness intake form with JSON schema and persona profiles, deployable on Vercel.",
   "scripts": {
-    "build": "echo 'Static files ready for deployment'",
+    "build": "prisma generate && echo 'Static files ready'",
     "start": "vercel dev",
     "dev": "vercel dev"
   },
   "engines": {
     "node": "24.x"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
+  },
   "devDependencies": {
+    "prisma": "^5.22.0",
     "vercel": "latest"
   }
 }
-

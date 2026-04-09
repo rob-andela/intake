@@ -1,0 +1,28 @@
+{
+  "client_id": "persona_ceo_champion",
+  "metadata": {
+    "client_name": "Persona: CEO/Executive Champion (AI-First Enterprise)",
+    "sponsor_name": "Synthetic Evaluation",
+    "persona_description": "A CEO who has made AI a board-level strategic priority. Full budget approved, immediate timelines, and personally sponsors the transformation initiative with direct ownership of outcomes.",
+    "team_size": 750,
+    "budget": "Multi-million enterprise budget fully approved",
+    "timeline": "< 3 months"
+  },
+  "responses": {
+    "Q1": 5,
+    "Q2": 5,
+    "Q3": 5,
+    "Q4": 5,
+    "Q5": 4,
+    "Q6": 5,
+    "Q7": 5,
+    "Q8": 5,
+    "Q9": 5,
+    "Q10": 5,
+    "Q11": 5,
+    "Q12": 5,
+    "Q13": 5,
+    "Q14": 5,
+    "Q15": 5
+  }
+}
