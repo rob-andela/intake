@@ -3,14 +3,6 @@
   "framework": null,
   "buildCommand": "prisma generate && echo 'Static files ready'",
   "outputDirectory": "./",
-  "headers": [
-    {
-      "source": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg))",
-      "headers": [
-        { "key": "cache-control", "value": "public, max-age=31536000, immutable" }
-      ]
-    }
-  ],
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/docs",  "destination": "/docs.html"  },
